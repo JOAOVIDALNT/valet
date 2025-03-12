@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+	  <TargetFramework>net8.0</TargetFramework>
+	  <ImplicitUsings>enable</ImplicitUsings>
+	  <Nullable>enable</Nullable>
+	  <PackageId>valet</PackageId>
+	  <Version>1.0.0</Version>
+	  <Authors>João Vidal</Authors>
+	  <Company>Awlife Software</Company>
+	  <Description>A simple and lightweight library designed for easy web application setup, providing a complete repository pattern and seamless user authentication management.</Description>
+	  <PackageTags>authentication, authconfig, config, userauth, jwt, bearer, token, hasher, repository, unitofwork</PackageTags>
+	  <RepositoryUrl>https://github.com/JOAOVIDALNT/valet</RepositoryUrl>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\valet.auth\valet.auth.csproj" />
+    <ProjectReference Include="..\valet.core\valet.core.csproj" />
+  </ItemGroup>
+
+</Project>
