@@ -3,12 +3,27 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{EDB92AE2-8E05-4BD4-B85C-D5BC35774289}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{95653F20-D980-4D3D-9CF7-ABB8FE9C1964}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "valet.lib", "src\valet.lib\valet.lib.csproj", "{5D158443-1A5F-43CB-87C6-8CEB428C12CA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5D158443-1A5F-43CB-87C6-8CEB428C12CA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5D158443-1A5F-43CB-87C6-8CEB428C12CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5D158443-1A5F-43CB-87C6-8CEB428C12CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5D158443-1A5F-43CB-87C6-8CEB428C12CA}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{5D158443-1A5F-43CB-87C6-8CEB428C12CA} = {EDB92AE2-8E05-4BD4-B85C-D5BC35774289}
 	EndGlobalSection
 EndGlobal
