@@ -4,31 +4,49 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
+using valet.lib.Auth.Data;
+using valet.lib.Auth.Data.Repositories;
 using valet.lib.Auth.Domain.Interfaces;
+using valet.lib.Auth.Domain.Interfaces.Repositories;
 using valet.lib.Auth.Service.Hash;
 using valet.lib.Auth.Service.Token;
+using valet.lib.Core.Data.Repositories;
+using valet.lib.Core.Domain.Interfaces;
 
 namespace valet.lib.Config
 {
-    public static class AuthConfig
+    public static class ValetConfig
     {
-        public static void AddValetAuthServices(this IServiceCollection services, IConfiguration configuration)
-        {
-            var secretKey = configuration.GetValue<string>("Settings:Secret");
 
-            services.AddProviders(secretKey!);
-            services.AddJwt(secretKey!);
-            services.AddAuthSwaggerGen();
+        public static IServiceCollection AddValet<TContext>(this IServiceCollection services, IConfiguration configuration, bool useAuthentication) where TContext : AuthDbContext
+        {
+            services.AddScoped<IUnitOfWork, UnitOfWork<TContext>>();
+
+            if (useAuthentication)
+            {
+                services.AddScoped<IRoleRepository, RoleRepository<TContext>>();
+                services.AddScoped<IUserRepository, UserRepository<TContext>>();
+                services.AddScoped<IUserRepository, UserRepository<TContext>>();
+            }
+            return services;
         }
 
-        private static void AddProviders(this IServiceCollection services, string secretKey)
+        public static IServiceCollection UsePasswordHasher(this IServiceCollection services)
         {
             services.AddTransient<IPasswordHasher, PasswordHasher>();
-            services.AddSingleton<ITokenGenerator>(new TokenGenerator(secretKey));
+            return services;
         }
 
-        private static void AddJwt(this IServiceCollection services, string secretKey)
+        public static IServiceCollection UseTokenGenerator(this IServiceCollection services, IConfiguration configuration)
         {
+            var secretKey = configuration.GetValue<string>("Settings:Secret"); // TODO: MAYBE HANDLE THIS POSSIBLE EXCEPTION
+            services.AddSingleton<ITokenGenerator>(new TokenGenerator(secretKey!));
+            return services;
+        }
+
+        public static IServiceCollection UseValetJwt(this IServiceCollection services, IConfiguration configuration)
+        {
+            var secretKey = configuration.GetValue<string>("Settings:Secret");
             services.AddAuthentication(x =>
             {
                 x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -46,9 +64,11 @@ namespace valet.lib.Config
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(secretKey!))
                 };
             });
+
+            return services;
         }
 
-        private static void AddAuthSwaggerGen(this IServiceCollection services)
+        public static IServiceCollection UseValetSwaggerGen(this IServiceCollection services)
         {
             services.AddSwaggerGen(options =>
             {
@@ -77,6 +97,8 @@ namespace valet.lib.Config
                     }
                 });
             });
+
+            return services;
         }
     }
 }
