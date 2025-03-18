@@ -155,7 +155,7 @@ Extend the `User` entity and update your `DbContext` to use the new class.
 Yes, but you must implement custom repository and `UnitOfWork` patterns. You can replace the default `GenericRepository<T>` and `UnitOfWork` with your own implementations that use another data access approach, such as Dapper or raw SQL queries.
 
 ### What if I forget to call Commit()?
-Since repositories do not automatically call SaveChanges(), you must explicitly invoke Commit() on the UnitOfWork to persist changes. Failing to do so will result in data modifications not being saved to the database.
+Since repositories do not automatically call `SaveChanges()`, you must explicitly invoke `Commit()` on the UnitOfWork to persist changes. Failing to do so will result in data modifications not being saved to the database.
 
 ### Conclusion
 
