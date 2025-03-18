@@ -139,7 +139,7 @@ All these repositories are automatically registered in the Dependency Injection 
 Similarly, other modules can be added individually to the DI container, such as `UsePasswordHasher()`.
 
 ### Database Commit
-Nothing in the repositories uses EF Core’s SaveChanges() method to commit database operations. The responsibility of committing changes lies with the user, providing greater flexibility to manage database transactions.
+Nothing in the repositories uses EF Core’s `SaveChanges()` method to commit database operations. The responsibility of committing changes lies with the user, providing greater flexibility to manage database transactions.
 
 With this pattern, operations do not automatically force a database commit, allowing users to control when changes are persisted.
 
