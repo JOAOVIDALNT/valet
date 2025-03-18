@@ -1,38 +1,40 @@
 # VALET
-Valet is a simple library designed to help developers on their application setup. There are 2 main modules to use in your applications.
 
-### VALET.CORE
-Valet Core brings you 2 main features:
+Valet is a simple library designed to help developers streamline their application setup. It consists of two main modules:
 
-#### GENERIC REPOSITORY AND UNIT OF WORK
-Developers can extend our generic repository to have all of the most common repository operations. There's also a Unit of Work repository already configured and with only a commit operation.
+## VALET.CORE
 
-#### BASE ENTITY
-A default base entity to be extended, providing key properties for any entity. Developers can use inside your own application like we use on all entities of our "Auth" module.
+Valet Core provides two key features:
 
-### VALET.AUTH
-Valet Auth brings you a full authentication tool set, displaying all these features:
+### Generic Repository and Unit of Work
+Developers can extend the generic repository to access common repository operations. A Unit of Work repository is also available, pre-configured with a commit operation.
 
-#### PASSWORD HASHER
-A password hasher to encrypt Users passwords using BCrypt.
+### Base Entity
+A default base entity is provided for extension, including essential properties for any entity. This base entity can be utilized within your application, just as it is in all entities of the "Auth" module.
 
-#### TOKEN GENERATOR
-A token generator that offers a JWT Token with relevant User information. 
+## VALET.AUTH
 
-#### CONTEXT
-An AuthDbContext to be extended, with all User logic configured.
+Valet Auth offers a comprehensive authentication toolkit, including the following features:
 
-#### ENTITIES
-There are 3 entities: User, Role and UserRole. All of those can be extended and customized for your best use.
+### Password Hasher
+A password hasher that securely encrypts user passwords using BCrypt.
 
+### Token Generator
+A JWT token generator that includes relevant user information.
 
-## TECHNICAL ESPECIFICATION
+### AuthDbContext
+An authentication database context that can be extended, with pre-configured user logic.
 
-### CONFIGURATION SETUP
-All needed configuration to use the modules of valet are provided at our configuration module.
+### Entities
+Three entities are provided: `User`, `Role`, and `UserRole`. These entities can be extended and customized as needed.
 
-### EXAMPLE
-Here's and example on how to fully configurate valet services on your application:
+## TECHNICAL SPECIFICATIONS
+
+### Configuration Setup
+All necessary configuration options for using Valet's modules are provided in the configuration module.
+
+### Example Usage
+Below is an example of how to configure Valet services in your application:
 
 ```csharp
 builder.Services.AddValet<AppDbContext>(builder.Configuration, true)
@@ -42,15 +44,15 @@ builder.Services.AddValet<AppDbContext>(builder.Configuration, true)
     .UseValetSwaggerGen();
 ```
 
-### DbContext
-It has to extend from valet AuthDbContext.
+### DbContext Setup
+Your `DbContext` must extend `AuthDbContext`:
 
 ```csharp
 public class AppDbContext(DbContextOptions options) : AuthDbContext(options)
 ```
 
 ### OnModelCreating
-If you want all the features from valet, like entity mapping for Auth module classes. You should override OnModelCreating passing base OnModelCreating with the actual builder.
+To enable Valet's features, such as entity mapping for authentication module classes, override `OnModelCreating` and call the base implementation:
 
 ```csharp
 protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -59,24 +61,32 @@ protected override void OnModelCreating(ModelBuilder modelBuilder)
     modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
 }
 ```
-Right after you can apply your own configuration, such as new mappings or stuff like that. Note that ApplyConfigurationFromAssembly already defines configuration from mappings.
 
-You could also add new DbSet's on your DbContext, as well as you can override our DbSet when extending from our classes.
+After applying the base configurations, you can add your custom configurations, including new mappings. Note that `ApplyConfigurationsFromAssembly` automatically applies configuration mappings.
+
+### Customizing DbContext
+You can add new `DbSet` properties to your `DbContext` and override existing ones when extending Valet's classes:
+
 ```csharp
 public DbSet<Wallet> Wallets { get; set; }
 public DbSet<Transaction> Transactions { get; set; }
 public DbSet<Recurrency> Recurrencies { get; set; }
 ```
+
+Example of extending `User` with additional properties:
+
 ```csharp
-public DbSet<LocalUser> LocalUsers { get; set; } // In case of adding relevant properties that will be persisted
+public DbSet<LocalUser> LocalUsers { get; set; } // Adds new persistent properties
 ```
 
-### Builder Configuration
-For configuration setup is very important to follow up an specific pattern for your secret key:
+### Configuration Settings
+For secure setup, define your secret key using the following pattern:
+
 ```json
 "Settings": {
-  "Secret":  "YOURSECRETKEY"
+  "Secret": "YOURSECRETKEY"
 }
 ```
-With that, our application can access your secret key through builder.Configuration.
+
+This allows Valet to access your secret key through `builder.Configuration`.
 
