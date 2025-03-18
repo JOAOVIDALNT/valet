@@ -2,6 +2,27 @@
 
 Valet is a simple library designed to help developers streamline their application setup. It consists of two main modules:
 
+## INTRODUCTION
+
+Valet simplifies authentication and data persistence in .NET applications by providing pre-configured tools for repositories, unit of work, and authentication management. It reduces boilerplate code, enforces best practices, and integrates seamlessly with Entity Framework Core.
+
+## INSTALLATION
+
+To install Valet, add the NuGet package:
+
+```sh
+Install-Package valet
+```
+
+Or via .NET CLI:
+
+```sh
+dotnet add package valet
+```
+
+🔗 **NuGet Package:** [Valet on NuGet](https://www.nuget.org/packages/valet/)
+
+
 ## VALET.CORE
 
 Valet Core provides two key features:
@@ -89,4 +110,54 @@ For secure setup, define your secret key using the following pattern:
 ```
 
 This allows Valet to access your secret key through `builder.Configuration`.
+
+## API Reference
+
+### Repositories
+- **`UserRepository`** – Extends the generic repository with additional operations:
+  - `UserExists(string email)`: Checks if a user with the given email exists.
+  - `GetUserWithRoleAsync(string email)`: Retrieves a user along with their assigned roles.
+- **`RoleRepository`** – Provides default repository operations plus:
+  - `RoleExistsAsync(string name)`: Checks if a role with the given name exists.
+- **`UserRoleRepository`** – Manages user-role assignments with standard repository operations.
+
+### Interfaces
+- `IRepository<T>` – Base interface for repositories
+- `IUnitOfWork` – Manages transactions
+- `IPasswordHasher` – Handles password hashing
+- `ITokenGenerator` – Generates JWT tokens
+
+### Classes
+- `Repository<T>` – Implements repository operations
+- `UnitOfWork` – Manages commits
+- `PasswordHasher` – Implements password hashing
+- `TokenGenerator` – Generates JWT 
+
+### Dependency Injection
+All these repositories are automatically registered in the Dependency Injection container when you configure `AddValet()` with true for `UseAuthentication`. If you set it to false, only the UnitOfWork will be available in the DI container.
+
+Similarly, other modules can be added individually to the DI container, such as `UsePasswordHasher()`.
+
+### Database Commit
+Nothing in the repositories uses EF Core’s SaveChanges() method to commit database operations. The responsibility of committing changes lies with the user, providing greater flexibility to manage database transactions.
+
+With this pattern, operations do not automatically force a database commit, allowing users to control when changes are persisted.
+
+## FAQs & Troubleshooting
+
+### Why is my token not being generated?
+Ensure you have configured the secret key correctly in `appsettings.json`.
+
+### How can I override default User properties?
+Extend the `User` entity and update your `DbContext` to use the new class.
+
+### Can I use Valet without Entity Framework?
+Yes, but you must implement custom repository and `UnitOfWork` patterns. You can replace the default `GenericRepository<T>` and `UnitOfWork` with your own implementations that use another data access approach, such as Dapper or raw SQL queries.
+
+### What if I forget to call Commit()?
+Since repositories do not automatically call SaveChanges(), you must explicitly invoke Commit() on the UnitOfWork to persist changes. Failing to do so will result in data modifications not being saved to the database.
+
+### Conclusion
+
+Valet simplifies authentication and data management in .NET applications. With its generic repositories, authentication tools, and extensible architecture, it reduces development time and enforces best practices.
 
