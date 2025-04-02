@@ -1,6 +1,8 @@
-﻿using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 using valet.lib.Auth.Domain.Entities;
 using valet.lib.Auth.Domain.Interfaces;
@@ -33,10 +35,11 @@ namespace valet.lib.Auth.Service.Token
             return tokenHandler.WriteToken(token);
         }
 
-        private static ClaimsIdentity GenerateClaims(User user)
+        private ClaimsIdentity GenerateClaims(User user)
         {
             var claims = new ClaimsIdentity();
 
+            claims.AddClaim(new Claim(ClaimTypes.Hash, user.Id.ToString()));
             claims.AddClaim(new Claim(ClaimTypes.Name, user.FirstName));
             claims.AddClaim(new Claim(ClaimTypes.Surname, user.LastName));
 
@@ -47,5 +50,8 @@ namespace valet.lib.Auth.Service.Token
 
             return claims;
         }
+
+ 
+
     }
 }
