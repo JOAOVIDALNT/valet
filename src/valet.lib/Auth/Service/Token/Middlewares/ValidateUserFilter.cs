@@ -1,30 +1,74 @@
-﻿using Microsoft.AspNetCore.Mvc.Filters;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.IdentityModel.Tokens;
+using System.Security.Claims;
+using valet.lib.Auth.Domain.Interfaces;
 using valet.lib.Auth.Domain.Interfaces.Repositories;
+using valet.lib.Exception;
+using valet.lib.Exception.Resource;
+using valet.lib.Exception.Response;
 
 namespace valet.lib.Auth.Service.Token.Middlewares
-{
+{ //DOC: DOCUMENTAR ATRIBUTO E FILTRO
     public class ValidateUserFilter : IAsyncAuthorizationFilter
     {
+        private readonly ITokenValidator _tokenValidator;
         private readonly IUserRepository _userRepository;
         private readonly string _roles;
-        public ValidateUserFilter(IUserRepository userRepository, string roles)
+        public ValidateUserFilter(IUserRepository userRepository, ITokenValidator tokenValidator, string roles)
         {
             _userRepository = userRepository;
+            _tokenValidator = tokenValidator;
             _roles = roles;
         }
-        public Task OnAuthorizationAsync(AuthorizationFilterContext context)
+        public async Task OnAuthorizationAsync(AuthorizationFilterContext context)
         {
-            var token = "";
+            try
+            {
+                var user = context.HttpContext.User;
+                var token = ExtractToken(context);
 
-            throw new NotImplementedException();
+                var userIdentifier = _tokenValidator.ValidateAndGetUserIdentifier(token);
+
+                if(!await _userRepository.UserExists(userIdentifier))
+                    throw new UnauthorizedException(ValetResourceMessageException.USER_UNAUTHORIZED);
+
+                if (!string.IsNullOrWhiteSpace(_roles))
+                {
+                    var requiredRoles = _roles.Split(',', StringSplitOptions.RemoveEmptyEntries);
+                    var userRoles = user.FindAll(ClaimTypes.Role).Select(r => r.Value).ToList();
+
+                    if (!requiredRoles.Any(role => userRoles.Contains(role)))
+                        throw new ForbiddenException(ValetResourceMessageException.USER_FORBIDDEN);
+                }
+
+            }
+            catch (SecurityTokenExpiredException)
+            {
+                context.Result = new UnauthorizedObjectResult(new ErrorResponse(ValetResourceMessageException.TOKEN_EXPIRED)
+                {
+                    TokenIsExpired = true
+                });
+            }
+            catch (AppBaseException ex)
+            {
+                context.HttpContext.Response.StatusCode = (int)ex.GetStatusCode();
+                context.Result = new ObjectResult(new ErrorResponse(ex.GetErrorMessages()));
+            }
+            catch
+            {
+                context.Result = new UnauthorizedObjectResult(new ErrorResponse(ValetResourceMessageException.USER_UNAUTHORIZED));
+            }
         }
 
         private static string ExtractToken(AuthorizationFilterContext context)
         {
             var header = context.HttpContext.Request.Headers.Authorization.ToString();
 
-            //if (string.IsNullOrWhiteSpace(header))
-            return "";
+            if (string.IsNullOrWhiteSpace(header))
+                throw new UnauthorizedException(ValetResourceMessageException.NO_TOKEN);
+
+            return header["Bearer ".Length..].Trim();
                 
         }
     }
