@@ -37,33 +37,13 @@ namespace valet.lib.Config
             return services;
         }
 
-        public static IServiceCollection UseTokenGenerator(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection UseTokenJwt(this IServiceCollection services, IConfiguration configuration)
         {
-            var secretKey = configuration.GetValue<string>("Settings:Secret"); // TODO: MAYBE HANDLE THIS POSSIBLE EXCEPTION
-            services.AddSingleton<ITokenGenerator>(new TokenGenerator(secretKey!));
-            return services;
-        }
+            var signingKey = configuration.GetValue<string>("Settings:Jwt:Secret");
+            var expirationMinutes = configuration.GetValue<uint>("Settings:Jwt:ExpirationMinutes"); // TODO: MAYBE HANDLE THIS POSSIBLE EXCEPTION
 
-        public static IServiceCollection UseValetJwt(this IServiceCollection services, IConfiguration configuration)
-        {
-            var secretKey = configuration.GetValue<string>("Settings:Secret");
-            services.AddAuthentication(x =>
-            {
-                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
-            .AddJwtBearer(x =>
-            {
-                x.RequireHttpsMetadata = false;
-                x.SaveToken = true;
-                x.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuer = false,
-                    ValidateAudience = false,
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(secretKey!))
-                };
-            });
+            services.AddSingleton<ITokenGenerator>(new TokenGenerator(signingKey!, expirationMinutes!));
+            services.AddSingleton<ITokenValidator>(new TokenValidator(signingKey!));
 
             return services;
         }
