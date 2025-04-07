@@ -5,9 +5,8 @@ using System.Security.Claims;
 using valet.lib.Auth.Domain.Interfaces;
 using valet.lib.Auth.Domain.Interfaces.Repositories;
 using valet.lib.Core.Exception;
-using valet.lib.Exception;
-using valet.lib.Exception.Resource;
-using valet.lib.Exception.Response;
+using valet.lib.Core.Exception.Resource;
+using valet.lib.Core.Exception.Response;
 
 namespace valet.lib.Auth.Service.Token.Middlewares
 { //DOC: DOCUMENTAR ATRIBUTO E FILTROx
