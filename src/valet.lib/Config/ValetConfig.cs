@@ -45,6 +45,21 @@ namespace valet.lib.Config
             services.AddSingleton<ITokenGenerator>(new TokenGenerator(signingKey!, expirationMinutes!));
             services.AddSingleton<ITokenValidator>(new TokenValidator(signingKey!));
 
+            services.AddAuthentication()
+            .AddJwtBearer(x =>
+            {
+                x.RequireHttpsMetadata = false;
+                x.SaveToken = true;
+                x.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(signingKey!)),
+                    ClockSkew = TimeSpan.Zero
+                };
+            });
+
+
             return services;
         } // DOC: JUSTIFICAR EXCLUSÃO DO ADDVALETJWT E MELHORIA NO USETOKENJWT EX USETOKENGENERATOR
 

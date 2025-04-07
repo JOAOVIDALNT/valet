@@ -6,14 +6,8 @@ namespace valet.lib.Exception
     {
         public ForbiddenException(string message) : base(message) { }
 
-        public override IList<string> GetErrorMessages()
-        {
-            throw new NotImplementedException();
-        }
+        public override IList<string> GetErrorMessages() => [Message];
 
-        public override HttpStatusCode GetStatusCode()
-        {
-            throw new NotImplementedException();
-        }
+        public override HttpStatusCode GetStatusCode() => HttpStatusCode.Forbidden;
     }
 }

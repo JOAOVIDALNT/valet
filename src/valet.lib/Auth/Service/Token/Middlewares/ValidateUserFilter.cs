@@ -9,7 +9,7 @@ using valet.lib.Exception.Resource;
 using valet.lib.Exception.Response;
 
 namespace valet.lib.Auth.Service.Token.Middlewares
-{ //DOC: DOCUMENTAR ATRIBUTO E FILTRO
+{ //DOC: DOCUMENTAR ATRIBUTO E FILTROx
     public class ValidateUserFilter : IAsyncAuthorizationFilter
     {
         private readonly ITokenValidator _tokenValidator;
