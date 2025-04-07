@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace valet.lib.Exception.Resource {
+namespace valet.lib.Core.Exception.Resource {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace valet.lib.Exception.Resource {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("valet.lib.Exception.Resource.ValetResourceMessageException", typeof(ValetResourceMessageException).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("valet.lib.Core.Exception.Resource.ValetResourceMessageException", typeof(ValetResourceMessageException).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;

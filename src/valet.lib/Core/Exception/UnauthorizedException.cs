@@ -1,8 +1,8 @@
 ﻿using System.Net;
 
-namespace valet.lib.Exception
+namespace valet.lib.Core.Exception
 {
-    public class UnauthorizedException : AppBaseException
+    public class UnauthorizedException : BaseException
     {
         public UnauthorizedException(string message) : base(message) { }
 

@@ -4,6 +4,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 using valet.lib.Auth.Domain.Interfaces;
 using valet.lib.Auth.Domain.Interfaces.Repositories;
+using valet.lib.Core.Exception;
 using valet.lib.Exception;
 using valet.lib.Exception.Resource;
 using valet.lib.Exception.Response;
@@ -50,7 +51,7 @@ namespace valet.lib.Auth.Service.Token.Middlewares
                     TokenIsExpired = true
                 });
             }
-            catch (AppBaseException ex)
+            catch (BaseException ex)
             {
                 context.HttpContext.Response.StatusCode = (int)ex.GetStatusCode();
                 context.Result = new ObjectResult(new ErrorResponse(ex.GetErrorMessages()));

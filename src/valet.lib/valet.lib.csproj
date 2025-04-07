@@ -22,7 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="Exception\Resource\ValetResourceMessageException.Designer.cs">
+    <Compile Update="Core\Exception\Resource\ValetResourceMessageException.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>ValetResourceMessageException.resx</DependentUpon>
@@ -30,7 +30,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Update="Exception\Resource\ValetResourceMessageException.resx">
+    <EmbeddedResource Update="Core\Exception\Resource\ValetResourceMessageException.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>ValetResourceMessageException.Designer.cs</LastGenOutput>
     </EmbeddedResource>

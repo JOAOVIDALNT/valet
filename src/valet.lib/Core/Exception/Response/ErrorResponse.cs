@@ -1,4 +1,4 @@
-﻿namespace valet.lib.Exception.Response
+﻿namespace valet.lib.Core.Exception.Response
 {
     public class ErrorResponse
     {
