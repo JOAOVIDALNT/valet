@@ -37,21 +37,15 @@ namespace valet.lib.Config
             return services;
         }
 
-        public static IServiceCollection UseTokenGenerator(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection UseTokenJwt(this IServiceCollection services, IConfiguration configuration)
         {
-            var secretKey = configuration.GetValue<string>("Settings:Secret"); // TODO: MAYBE HANDLE THIS POSSIBLE EXCEPTION
-            services.AddSingleton<ITokenGenerator>(new TokenGenerator(secretKey!));
-            return services;
-        }
+            var signingKey = configuration.GetValue<string>("Settings:Jwt:Secret"); // DOC: DOCUMENTAR NOVO PATH
+            var expirationMinutes = configuration.GetValue<uint>("Settings:Jwt:ExpirationMinutes"); // TODO: MAYBE HANDLE THIS POSSIBLE EXCEPTION
 
-        public static IServiceCollection UseValetJwt(this IServiceCollection services, IConfiguration configuration)
-        {
-            var secretKey = configuration.GetValue<string>("Settings:Secret");
-            services.AddAuthentication(x =>
-            {
-                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
+            services.AddSingleton<ITokenGenerator>(new TokenGenerator(signingKey!, expirationMinutes!));
+            services.AddSingleton<ITokenValidator>(new TokenValidator(signingKey!));
+
+            services.AddAuthentication()
             .AddJwtBearer(x =>
             {
                 x.RequireHttpsMetadata = false;
@@ -60,13 +54,14 @@ namespace valet.lib.Config
                 {
                     ValidateIssuer = false,
                     ValidateAudience = false,
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(secretKey!))
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(signingKey!)),
+                    ClockSkew = TimeSpan.Zero
                 };
             });
 
+
             return services;
-        }
+        } // DOC: JUSTIFICAR EXCLUSÃO DO ADDVALETJWT E MELHORIA NO USETOKENJWT EX USETOKENGENERATOR
 
         public static IServiceCollection UseValetSwaggerGen(this IServiceCollection services)
         {

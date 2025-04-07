@@ -11,5 +11,7 @@ namespace valet.lib.Auth.Data.Repositories
         public async Task<User> GetUserWithRolesAsync(string email) => await dbSet.Include(u => u.UserRoles)
                                                                             .ThenInclude(ur => ur.Role)
                                                                             .FirstAsync(u => u.Email.Equals(email));
+
+        public async Task<bool> UserExists(Guid identifier) => await dbSet.AnyAsync(u => u.Id.Equals(identifier)); // DOC: DOCUMENTAR NOVA OPÇÃO DE USEREXISTS
     }
 }
