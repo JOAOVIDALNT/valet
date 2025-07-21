@@ -18,7 +18,7 @@ namespace valet.lib.Config
     public static class ValetConfig
     {
 
-        public static IServiceCollection AddValet<TContext>(this IServiceCollection services, IConfiguration configuration, bool useAuthentication) where TContext : AuthDbContext
+        public static IServiceCollection AddValet<TContext>(this IServiceCollection services, bool useAuthentication) where TContext : AuthDbContext
         {
             services.AddScoped<IUnitOfWork, UnitOfWork<TContext>>();
 
@@ -26,7 +26,7 @@ namespace valet.lib.Config
             {
                 services.AddScoped<IRoleRepository, RoleRepository<TContext>>();
                 services.AddScoped<IUserRepository, UserRepository<TContext>>();
-                services.AddScoped<IUserRepository, UserRepository<TContext>>();
+                services.AddScoped<IUserRoleRepository, UserRoleRepository<TContext>>();
             }
             return services;
         }
