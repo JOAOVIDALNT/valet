@@ -18,26 +18,46 @@ namespace valet.lib.Config
     public static class ValetConfig
     {
 
-        public static IServiceCollection AddValet<TContext>(this IServiceCollection services, bool useAuthentication) where TContext : AuthDbContext
+        public static IServiceCollection AddValet<TContext>(this IServiceCollection services, IConfiguration configuration, Action<ValetOptions>? configure = null) where TContext : AuthDbContext
         {
+            var options = new ValetOptions();
+            configure?.Invoke(options);
+            services.AddSingleton(options);
+
             services.AddScoped<IUnitOfWork, UnitOfWork<TContext>>();
 
-            if (useAuthentication)
+            if (options.EnableAuthRepositories)
             {
                 services.AddScoped<IRoleRepository, RoleRepository<TContext>>();
                 services.AddScoped<IUserRepository, UserRepository<TContext>>();
                 services.AddScoped<IUserRoleRepository, UserRoleRepository<TContext>>();
             }
+
+            if (options.EnablePasswordHasher)
+            {
+                services.UsePasswordHasher();
+            }
+
+            if (options.EnableTokenJwtGeneration)
+            {
+                services.UseTokenJwt(configuration);
+            }
+
+            if (options.EnableValetSwaggerGen)
+            {
+                services.UseValetSwaggerGen();
+            }
+
             return services;
         }
 
-        public static IServiceCollection UsePasswordHasher(this IServiceCollection services)
+        private static IServiceCollection UsePasswordHasher(this IServiceCollection services)
         {
             services.AddTransient<IPasswordHasher, PasswordHasher>();
             return services;
         }
 
-        public static IServiceCollection UseTokenJwt(this IServiceCollection services, IConfiguration configuration)
+        private static IServiceCollection UseTokenJwt(this IServiceCollection services, IConfiguration configuration)
         {
             var signingKey = configuration.GetValue<string>("Settings:Jwt:Secret"); // DOC: DOCUMENTAR NOVO PATH
             var expirationMinutes = configuration.GetValue<uint>("Settings:Jwt:ExpirationMinutes"); // TODO: MAYBE HANDLE THIS POSSIBLE EXCEPTION
@@ -63,7 +83,7 @@ namespace valet.lib.Config
             return services;
         } // DOC: JUSTIFICAR EXCLUSÃO DO ADDVALETJWT E MELHORIA NO USETOKENJWT EX USETOKENGENERATOR
 
-        public static IServiceCollection UseValetSwaggerGen(this IServiceCollection services)
+        private static IServiceCollection UseValetSwaggerGen(this IServiceCollection services)
         {
             services.AddSwaggerGen(options =>
             {
