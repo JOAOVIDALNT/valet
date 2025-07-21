@@ -36,7 +36,7 @@ namespace valet.lib.Core.Data.Repositories
         {
             IQueryable<T> query = dbSet;
 
-            if (tracked)
+            if (!tracked)
                 query = query.AsNoTracking();
 
             if (filter != null)
