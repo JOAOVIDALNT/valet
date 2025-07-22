@@ -1,20 +1,20 @@
 # VALET
 
-Valet is a simple library designed to help developers streamline their application setup. It consists of two main modules:
+**Valet** is a lightweight library designed to streamline setup and configuration for .NET applications.
 
 ## INTRODUCTION
 
-Valet simplifies authentication and data persistence in .NET applications by providing pre-configured tools for repositories, unit of work, and authentication management. It reduces boilerplate code, enforces best practices, and integrates seamlessly with Entity Framework Core.
+Valet simplifies authentication and data persistence in .NET by offering pre-configured tools for repositories, unit of work, and authentication management. It helps reduce boilerplate, enforces best practices, and integrates seamlessly with Entity Framework Core.
 
 ## INSTALLATION
 
-To install Valet, add the NuGet package:
+Install via NuGet:
 
 ```sh
 Install-Package valet
 ```
 
-Or via .NET CLI:
+Or using the .NET CLI:
 
 ```sh
 dotnet add package valet
@@ -22,43 +22,53 @@ dotnet add package valet
 
 🔗 **NuGet Package:** [Valet on NuGet](https://www.nuget.org/packages/valet/)
 
+<br/>
 
 ## VALET.CORE
 
-Valet Core provides three key features:
+Valet Core module includes three key features:
 
-### Generic Repository and Unit of Work
-Developers can extend the generic repository to access common repository operations. A Unit of Work repository is also available, pre-configured with a commit operation.
+### Generic Repository & Unit of Work
+
+Extend the generic repository to access common data operations. The Unit of Work pattern is included to group transactions and commit changes with a single call.
 
 ### Base Entity
-A default base entity is provided for extension, including essential properties for any entity. This base entity can be utilized within your application, just as it is in all entities of the "Auth" module.
+
+A base class providing default properties (`Id`, `CreatedAt`, `UpdatedAt`) for entity inheritance. These are used across all Auth entities and can be reused in your application.
 
 ### Base Exception
-An abstract base class is also included, designed to simplify the creation of custom exceptions. It extends System.Exception and provides a clean structure for handling exception details.
+
+An abstract base class that extends `System.Exception`, designed for structured custom exception handling. It provides a clean foundation for building and managing domain-level exceptions.
+
+<br/>
 
 ## VALET.AUTH
 
-Valet Auth offers a comprehensive authentication toolkit, including the following features:
+Valet Auth offers a complete set of tools for user authentication:
 
 ### Entities
-Three entities are provided: `User`, `Role`, and `UserRole`. These entities can be extended and customized as needed.
+
+Predefined entities: `User`, `Role`, and `UserRole`. These are fully extendable for your application needs.
 
 ### AuthDbContext
-An authentication database context that can be extended, with pre-configured user logic. The AuthDbContext came with our authentication schema pattern set, for `User`, `Role` and `UserRole`. All those with mapping configured.
+
+A specialized DbContext with pre-configured mappings and logic for user, role, and role-assignment entities. You can extend it just like a standard `DbContext`.
 
 ### Password Hasher
-A password hasher that securely encrypts user passwords using BCrypt.
 
-### Token Managment
-A JWT complete token managment that includes generation of tokens and claims for `User` and validation through `Attribute` on controllers.
+Provides secure password hashing using BCrypt, including hashing and verification utilities.
 
-## TECHNICAL SPECIFICATIONS
+### Token Management
 
-### Configuration Setup
-All necessary configuration options for using Valet's auth module are provided in the configuration module.
+A complete JWT implementation for token creation and validation, including built-in controller attributes for user validation.
 
-#### Example Usage
-Below is an example of how to configure Valet services in your application:
+<br/>
+
+## TECHNICAL SETUP
+
+### Configuration
+
+Configure Valet using the following example:
 
 ```csharp
 builder.Services.AddValet<AppDbContext>(builder.Configuration, options => 
@@ -67,20 +77,20 @@ builder.Services.AddValet<AppDbContext>(builder.Configuration, options =>
   options.EnablePasswordHasher = true;
   options.EnableTokenJwtManagment = true;
   options.EnableValetSwaggerGen = true;
-})
+});
 ```
-You can decide how features you want to use or not. If you don't want to use any feature you don't need to pass options or any specific feature inside.
 
+Omitting a configuration will exclude the respective feature — all are optional.
 
 ### DbContext Setup
-If you want to use our authentication feature your local `DbContext` must extend `AuthDbContext`:
+
+If using authentication, your context should inherit from `AuthDbContext`:
 
 ```csharp
 public class AppDbContext(DbContextOptions options) : AuthDbContext(options)
 ```
 
-#### OnModelCreating
-To enable Valet's features, such as entity mapping for authentication module classes, override `OnModelCreating` and call the base implementation:
+Then override `OnModelCreating`:
 
 ```csharp
 protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -90,34 +100,33 @@ protected override void OnModelCreating(ModelBuilder modelBuilder)
 }
 ```
 
-After applying the base configurations, you can add your custom configurations, including new mappings. Note that `ApplyConfigurationsFromAssembly` automatically applies configuration mappings.
+This ensures Valet's entity mappings are applied. You can still apply your own configurations as needed.
 
-#### Customizing DbContext
-You can add new `DbSet` properties to your `DbContext` and override existing ones when extending Valet's classes:
+### Custom DbContext Properties
+
+You're free to add custom `DbSet`s:
 
 ```csharp
 public DbSet<Wallet> Wallets { get; set; }
 public DbSet<Transaction> Transactions { get; set; }
-public DbSet<Recurrency> Recurrencies { get; set; }
 ```
 
-Example of extending `User` with additional properties:
+Extend the `User` entity:
 
 ```csharp
-using valet.lib.Auth.Domain.Entities;
-
 public class LocalUser : User
 {
-  public int Age { get; set; };
+  public int Age { get; set; }
 }
-```
 
-```csharp
 public DbSet<LocalUser> LocalUsers { get; set; }
 ```
 
-### Configuration Settings
-For jwt managment setup, define your secret key and expiration time of token using the following pattern:
+<br/>
+
+### JWT Configuration
+
+If you're intended to use token managment define your JWT settings in your `appsettings.json`:
 
 ```json
 "Settings": {
@@ -127,267 +136,194 @@ For jwt managment setup, define your secret key and expiration time of token usi
   }
 }
 ```
-This allows Valet to access your secret key through `builder.Configuration`.
 
-### Features Usage
-Some examples of how to use our features:
+<br/>
 
-#### CORE
-##### BaseEntity
+
+## FEATURE USAGE
+
+### CORE
+
+#### BaseEntity
+
 ```csharp
-using valet.lib.Core.Domain.Entities;
-
 public class Wallet : BaseEntity
 {
-  public decimal Balance {get; set;}
-  public Guid UserId {get; set;}
+  public decimal Balance { get; set; }
+  public Guid UserId { get; set; }
   public virtual ICollection<Transaction> Transactions { get; set; }
 }
 ```
-Extend BaseEntity with three default properties: (Guid) Id, (DateTime) CreatedAt, (DateTime) UpdatedAt.
-All those properties are `private set` and only `UpdatedAt` could be changed through `Touch()` method, wich is protected and could be accessible only into the entity that extends BaseEntity.
 
-##### BaseException
+* `Id`, `CreatedAt`, and `UpdatedAt` are auto-handled.
+* `UpdatedAt` can only be updated via the protected `Touch()` method.
+
+#### BaseException
+
 ```csharp
-using valet.lib.Core.Exception;
-
 public class InsufficientFundsException : BaseException
 {
-    public InsufficientFundsException() : base("Insuficient funds for this operation.") { }
+    public InsufficientFundsException() : base("Insufficient funds for this operation.") {}
 
     public override IList<string> GetErrorMessages() => [Message];
     public override HttpStatusCode GetStatusCode() => HttpStatusCode.Forbidden;
 }
 ```
-BaseException is a abstract class that extends SystemException and define two methods that will help you to handle exceptions, you can extend and customize your exception class as you want, in cases where there's a list of exceptions, you can receive at constructor and pass `string.Empty` to base constructor.
 
-##### Generic Repository
-You can extends valet generic repository, set your class repository and add methods with these two steps:
+Designed for clean and structured exception handling. You can customize exceptions and aggregate error messages.
+
+#### Generic Repository
+
+Create custom repository interfaces:
 
 ```csharp
-using valet.lib.Core.Domain.Interfaces;
-
 public interface IWalletRepository : IRepository<Wallet>
 {
     Task<bool> WalletBelongsToUser(Guid walletId, Guid userId);
-    Task<decimal> GetWalletBalance(Guid walletId);
-    Task<decimal> GetTotalBalanceForUser(Guid userId);
 }
 ```
 
-```csharp
-using valet.lib.Core.Data.Repositories;
+And implement them:
 
-public class WalletRepository(AppDbContext db) :  Repository<Wallet>(db), IWalletRepository
+```csharp
+public class WalletRepository(AppDbContext db) : Repository<Wallet>(db), IWalletRepository
 {
-    public async Task<decimal> GetWalletBalance(Guid walletId) => ...
-    public async Task<bool> WalletBelongsToUser(Guid walletId, Guid userId) => ..
-    public async Task<decimal> GetTotalBalanceForUser(Guid userId) => ...
-    
+    public async Task<bool> WalletBelongsToUser(Guid walletId, Guid userId) => ...
 }
 ```
-That's the example with primary constructor, notice that we extend our Interface previously configured and pass our dbcontext to valet Generic Repository implementation, wich has the main operations: `GetAllAsync` (with filter and pagination option), `GetAsync` (with filter and track option), `CreateAsync`, `Delete`, `Update`.
 
-##### Unit of Work
-This feature is configured by default on `AddValet` to service collection and is intended to give you the responsability on commiting changes to the databse. So always remember to use when inserting or updating.
+Includes default operations:
+
+* `GetAllAsync()`, `GetAsync()`
+* `CreateAsync()`, `Update()`, `Delete()`
+
+#### Unit of Work
+
+Used to commit changes manually:
 
 ```csharp
-public class ExampleService
-{
-  private readonly IUnitOfWork _uow;
-  private readonly IExampleRepository _repo;
-
-  public ExampleService(IUnitOfWork uow, IExampleRepository repo)
-  {
-    _uow = uow;
-    _repo = repo;
-  }
-
-  public async Task Execute(ExampleRequest req)
-  {
-    ...
-    await _repo.CreateAsync(entity);
-    // any other db change
-    await _uow.CommitAsync();
-  }
-}
+await _repo.CreateAsync(entity);
+await _otherRepo.Update(prop);
+await _uow.CommitAsync();
 ```
-This logic allow you to create or update more than one propertie in databse per transaction and give you freedom to use strategically the `SaveChanges()`.
-Note that our unit of work isn't a IDisposable, 'cause it's intended to use on api request lifecycle and doesn't need to handle dispose.
 
-##### Error Response
-This class is intended to be used directly as your default error response for http calls. Theres an example on how to use on a ExceptionFilter:
+Transactions are not automatically committed. You control the lifecycle.
+
+#### Error Response
+
+Recommended use in exception handling middleware or filters:
 
 ```csharp
-using valet.lib.Core.Exception;
-using valet.lib.Core.Exception.Response;
-
-public class ExceptionFilter : IExceptionFilter
+public void OnException(ExceptionContext context)
 {
-    public void OnException(ExceptionContext context)
+    if (context.Exception is BaseException baseEx)
     {
-        if (context.Exception is BaseException baseException)
-            HandleProjectException(context, baseException);
-        else
-            HandleUnknowException(context);       
+      context.HttpContext.Response.StatusCode = (int)baseException.GetStatusCode();
+      context.Result = new ObjectResult(new ErrorResponse(baseException.GetErrorMessages()));
     }
-
-    private void HandleProjectException(ExceptionContext context, BaseException baseException)
-    {
-        context.HttpContext.Response.StatusCode = (int)baseException.GetStatusCode();
-        context.Result = new ObjectResult(new ErrorResponse(baseException.GetErrorMessages()));
-    }
-
-    ...
 }
 ```
 
-It's also common to specify in reponse type attributes on controller:
-```csharp
-[ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
-```
-#### AUTH
+<br/>
 
-##### Password Hasher
-A simple feature that aim's to abstract BCrypt hashing with salt. Here we have two main methods:
+### AUTH
 
-```csharp
-string HashPassword(string password);
-bool VerifyPassword(string givenPassword, string storedPassword);
-```
-the `HashPassword` to encrypt the parameter given string, and the `VerifyPassword` to validate if stored pass matches with the given one.
-This operation is intended to be completed always using DI accessing the hasher by his interface.
+#### Password Hasher
 
-##### Token Managment
-This section provides fully token jwt managment, since generation through validation by token and validate user extracting token from `HttpContext`.
-
-There's and example of an login logic with token generation:
+Use via DI:
 
 ```csharp
-public UserLoginService(IUserLoginValidation loginValidation, IUserRepository userRepository, IPasswordHasher passwordHasher, ITokenGenerator tokenGenerator)
-{
-    _loginValidation = loginValidation;
-    _userRepository = userRepository;
-    _passwordHasher = passwordHasher;
-    _tokenGenerator = tokenGenerator;
-}
-public async Task<UserLoginResponse> Login(UserLoginRequest request)
-{
-    await ValidateAsync(request);
-
-    var user = await _userRepository.GetAsync(x => x.Email == request.Email);
-
-    if (!_passwordHasher.VerifyPassword(request.Password, user.Password))
-        throw new InvalidLoginException();
-
-    var token = _tokenGenerator.GenerateToken(user);
-
-    return new UserLoginResponse(token);
-}
+string hash = _hasher.HashPassword("secret");
+bool valid = _hasher.VerifyPassword("input", storedHash);
 ```
 
-Another key feature of token managment is our `ValidateUserAttribute` that can validate the access of users directly on controller.
-You can use either on controller or individually at methods.
+#### Token Management
+
+Example login logic:
 
 ```csharp
-using valet.lib.Auth.Service.Token.Middlewares;
+var user = await _userRepo.GetAsync(x => x.Email == request.Email);
+if (!_hasher.VerifyPassword(request.Password, user.Password))
+    throw new InvalidLoginException();
 
-[ApiController]
-[Route("[controller]")]
-public class TransactionController : ControllerBase
-{
-    [ValidateUser]
-    [HttpGet("example")]
-    public async Task<IActionResult> GetExample() ...
-}
+var token = _tokenGenerator.GenerateToken(user);
+return new UserLoginResponse(token);
 ```
-Notice that we can use with roles as well:
+
+Use attribute-based access control:
+
 ```csharp
-using valet.lib.Auth.Service.Token.Middlewares;
-
-
-[ApiController]
-[Route("[controller]")]
-[ValidateUser]
-public class TransactionController : ControllerBase
-{
-    [ValidateUser("admin")]
-    [HttpPost("create")]
-    public async Task<IActionResult> Create() ...
-}
+[ValidateUser] // Validates any authenticated user
+[ValidateUser("admin")] // Validates specific roles
 ```
-In these example we also use the attribute directly in controller, with this you have to be a valid user to access any method, and be a admin to create.
+could be added either to controller class and individually to controller methods.
 
-##### Auth Properties and Repostories
-At last but as important, we have our auth repositories, so if you configure to use all these features our repositories implementation will be really useful for you.
+#### Auth Repositories
 
-We have default support methods on `UserRepository` and `RoleRepository` but feel free to create you local methods by extending valet's implementation.
+Built-in interfaces:
 
 ```csharp
 public interface IUserRepository : IRepository<User>
 {
-    Task<bool> UserExists(string email);
-    Task<bool> UserExists(Guid identifier);
     Task<User> GetUserWithRolesAsync(string email);
 }
 ```
-
-```csharp
-public interface IRoleRepository : IRepository<Role>
-{
-    Task<bool> RoleExistsAsync(string name);
-}
-```
-You can continue using `UserRepository` methods even with a custom `LocalUser` on your application for example, since this one extend valet one.
-
+Those could be also extended and incremented localy.
 
 ## API Reference
 
 ### Repositories
-- **`UserRepository`** – Extends the generic repository with additional operations:
-  - `UserExists(string email)`: Checks if a user with the given email exists.
-  - `GetUserWithRoleAsync(string email)`: Retrieves a user along with their assigned roles.
-- **`RoleRepository`** – Provides default repository operations plus:
-  - `RoleExistsAsync(string name)`: Checks if a role with the given name exists.
-- **`UserRoleRepository`** – Manages user-role assignments with standard repository operations.
+
+* **UserRepository**: Get user by email, check existence, get roles.
+* **RoleRepository**: Check role existence.
+* **UserRoleRepository**: Manage assignments.
 
 ### Interfaces
-- `IRepository<T>` – Base interface for repositories
-- `IUnitOfWork` – Manages transactions
-- `IPasswordHasher` – Handles password hashing
-- `ITokenGenerator` – Generates JWT tokens
 
-### Classes
-- `Repository<T>` – Implements repository operations
-- `UnitOfWork` – Manages commits
-- `PasswordHasher` – Implements password hashing
-- `TokenGenerator` – Generates JWT 
+* `IRepository<T>` – Generic repository contract
+* `IUnitOfWork` – Handles commit logic
+* `IPasswordHasher`, `ITokenGenerator`
 
-### Dependency Injection
-All these repositories are automatically registered in the Dependency Injection container when you configure `AddValet()` with true for `UseAuthentication`. If you set it to false, only the UnitOfWork will be available in the DI container.
+### Services
 
-Similarly, other modules can be added individually to the DI container, such as `UsePasswordHasher()`.
+* `Repository<T>` – Concrete implementation
+* `UnitOfWork` – Commit unit
+* `PasswordHasher`, `TokenGenerator`
 
-### Database Commit
-Nothing in the repositories uses EF Core’s `SaveChanges()` method to commit database operations. The responsibility of committing changes lies with the user, providing greater flexibility to manage database transactions.
+<br/>
 
-With this pattern, operations do not automatically force a database commit, allowing users to control when changes are persisted.
+## DEPENDENCY INJECTION
 
-## FAQs & Troubleshooting
+When calling `AddValet()`, you control what gets injected via options. Only enabled features will be added to the DI container.
 
-### Why is my token not being generated?
-Ensure you have configured the secret key correctly in `appsettings.json`.
+<br/>
 
-### How can I override default User properties?
-Extend the `User` entity and update your `DbContext` to use the new class.
+## DATABASE COMMIT
+
+Valet repositories never call `SaveChanges()` internally. You must call `Commit()` via `IUnitOfWork`, giving you full transaction control.
+
+<br/>
+
+## FAQs
+
+### Why isn't my token being generated?
+
+Check your JWT configuration in `appsettings.json`.
+
+### Can I override the `User` entity?
+
+Yes — extend `User` and use your custom class in your `DbContext`.
 
 ### Can I use Valet without Entity Framework?
-Yes, but you must implement custom repository and `UnitOfWork` patterns. You can replace the default `GenericRepository<T>` and `UnitOfWork` with your own implementations that use another data access approach, such as Dapper or raw SQL queries.
 
-### What if I forget to call Commit()?
-Since repositories do not automatically call `SaveChanges()`, you must explicitly invoke `Commit()` on the UnitOfWork to persist changes. Failing to do so will result in data modifications not being saved to the database.
+Yes, but you'll need to implement your own `Repository` and `UnitOfWork`.
 
-### Conclusion
+### What if I forget to call `Commit()`?
 
-Valet simplifies authentication and data management in .NET applications. With its generic repositories, authentication tools, and extensible architecture, it reduces development time and enforces best practices.
+Changes won't be persisted. Always call `Commit()` after modifying data.
 
+<br/>
+
+## CONCLUSION
+
+Valet helps you build secure, scalable .NET applications with minimal boilerplate. From core infrastructure to full authentication, its modular design adapts to your needs while enforcing clean architecture principles.
