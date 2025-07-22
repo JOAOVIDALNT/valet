@@ -38,7 +38,7 @@ namespace valet.lib.Config
                 services.UsePasswordHasher();
             }
 
-            if (options.EnableTokenJwtGeneration)
+            if (options.EnableTokenJwtManagment)
             {
                 services.UseTokenJwt(configuration);
             }

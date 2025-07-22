@@ -1,9 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Security.Cryptography;
-using System.Text;
 using valet.lib.Auth.Domain.Entities;
 using valet.lib.Auth.Domain.Interfaces;
 
@@ -53,8 +50,5 @@ namespace valet.lib.Auth.Service.Token
 
             return claims;
         }
-
- 
-
     }
 }
