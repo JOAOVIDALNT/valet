@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using valet.lib.Auth.Data;
 using valet.lib.Auth.Data.Repositories;
+using valet.lib.Auth.Domain.Entities;
 using valet.lib.Core.Data.Repositories;
 using valet.test.Builders;
 
@@ -86,7 +87,7 @@ namespace valet.test.Auth.Data.Repositories
                 var uow = new UnitOfWork<AuthDbContext>(context);
 
                 var user = UserBuilder.Build();
-                var role = RoleBuilder.Build();
+                var role = new Role("tester");
                 var userRole = UserRoleBuilder.Build(user, role);
 
                 user.UserRoles.Add(userRole);
