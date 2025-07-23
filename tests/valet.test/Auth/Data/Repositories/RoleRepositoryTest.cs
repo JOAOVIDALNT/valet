@@ -30,7 +30,7 @@ namespace valet.test.Auth.Data.Repositories
                 var role = RoleBuilder.Build();
 
                 await roleRepository.CreateAsync(role);
-                await uow.Commit();
+                await uow.CommitAsync();
 
                 var result = await roleRepository.RoleExistsAsync(role.Name);
 

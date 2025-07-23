@@ -3,7 +3,7 @@ using System.Text;
 
 namespace valet.lib.Auth.Service.Token
 {
-    public abstract class TokenHandler
+    internal abstract class TokenHandler
     {
         protected static SymmetricSecurityKey SecurityKey(string signingKey)
         {

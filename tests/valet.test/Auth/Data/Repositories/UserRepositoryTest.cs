@@ -28,7 +28,7 @@ namespace valet.test.Auth.Data.Repositories
                 var user = UserBuilder.Build();
 
                 await userRepository.CreateAsync(user);
-                await uow.Commit();
+                await uow.CommitAsync();
 
                 var result = await userRepository.GetAsync(x => x.Id == user.Id);
 
@@ -50,7 +50,7 @@ namespace valet.test.Auth.Data.Repositories
                 var user = UserBuilder.Build();
 
                 await userRepository.CreateAsync(user);
-                await uow.Commit();
+                await uow.CommitAsync();
 
                 var result = await userRepository.UserExists(user.Email);
 
@@ -92,7 +92,7 @@ namespace valet.test.Auth.Data.Repositories
                 user.UserRoles.Add(userRole);
 
                 await userRepository.CreateAsync(user);
-                await uow.Commit();
+                await uow.CommitAsync();
 
                 var result = await userRepository.GetUserWithRolesAsync(user.Email);
 

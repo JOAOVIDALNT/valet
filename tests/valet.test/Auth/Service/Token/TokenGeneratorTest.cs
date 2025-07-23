@@ -13,7 +13,7 @@ namespace valet.test.Auth.Service.Token
         [Fact]
         public void Should_Return_Valid_Token()
         {
-            var generator = new TokenGenerator("u9yw0akS1fwQh09fA4rpR7ob2t11if41");
+            var generator = new TokenGenerator("u9yw0akS1fwQh09fA4rpR7ob2t11if41", 60);
 
             var user = UserBuilder.Build();
             var result = generator.GenerateToken(user);
@@ -28,17 +28,17 @@ namespace valet.test.Auth.Service.Token
         [Fact]
         public void Should_Return_Invalid_Token()
         {
-            var generator = new TokenGenerator("u9yw0akS1fwQh09fA4rpR7ob2t11if41");
+            var generator = new TokenGenerator("u9yw0akS1fwQh09fA4rpR7ob2t11if41", 60);
 
             var user = UserBuilder.Build();
             var result = generator.GenerateToken(user);
-            user.Id = Guid.NewGuid();
+            user.FirstName = "bolsolula";
 
             var handler = new JwtSecurityTokenHandler();
             var jsonToken = handler.ReadToken(result) as JwtSecurityToken;
             var claims = jsonToken?.Claims;
 
-            Assert.DoesNotContain(claims!, x => x.Value == user.Id.ToString());
+            Assert.DoesNotContain(claims!, x => x.Value == user.FirstName);
         }
     }
 }

@@ -8,7 +8,6 @@ namespace valet.test.Builders
         {
             return new UserRole
             {
-                Id = Guid.NewGuid(),
                 User = user,
                 Role = role,
                 UserId = user.Id,

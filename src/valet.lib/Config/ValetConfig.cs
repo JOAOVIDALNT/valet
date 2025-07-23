@@ -59,8 +59,8 @@ namespace valet.lib.Config
 
         private static IServiceCollection UseTokenJwt(this IServiceCollection services, IConfiguration configuration)
         {
-            var signingKey = configuration.GetValue<string>("Settings:Jwt:Secret"); // DOC: DOCUMENTAR NOVO PATH
-            var expirationMinutes = configuration.GetValue<uint>("Settings:Jwt:ExpirationMinutes"); // TODO: MAYBE HANDLE THIS POSSIBLE EXCEPTION
+            var signingKey = configuration.GetValue<string>("Settings:Jwt:Secret");
+            var expirationMinutes = configuration.GetValue<uint>("Settings:Jwt:ExpirationMinutes");
 
             services.AddSingleton<ITokenGenerator>(new TokenGenerator(signingKey!, expirationMinutes!));
             services.AddSingleton<ITokenValidator>(new TokenValidator(signingKey!));
@@ -81,7 +81,7 @@ namespace valet.lib.Config
 
 
             return services;
-        } // DOC: JUSTIFICAR EXCLUSÃO DO ADDVALETJWT E MELHORIA NO USETOKENJWT EX USETOKENGENERATOR
+        }
 
         private static IServiceCollection UseValetSwaggerGen(this IServiceCollection services)
         {

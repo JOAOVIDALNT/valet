@@ -6,7 +6,7 @@ using valet.lib.Auth.Domain.Interfaces;
 
 namespace valet.lib.Auth.Service.Token
 {
-    public class TokenGenerator : TokenHandler, ITokenGenerator
+    internal class TokenGenerator : TokenHandler, ITokenGenerator
     {
         private readonly string _secretKey;
         private readonly uint _expirationMinutes;
