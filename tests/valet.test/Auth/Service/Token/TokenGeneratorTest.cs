@@ -32,13 +32,13 @@ namespace valet.test.Auth.Service.Token
 
             var user = UserBuilder.Build();
             var result = generator.GenerateToken(user);
-            user.FirstName = "bolsolula";
+            user.UpdateName("bolso","lula");
 
             var handler = new JwtSecurityTokenHandler();
             var jsonToken = handler.ReadToken(result) as JwtSecurityToken;
             var claims = jsonToken?.Claims;
 
-            Assert.DoesNotContain(claims!, x => x.Value == user.FirstName);
+            Assert.DoesNotContain(claims!, x => x.Value == user.FirstName || x.Value == user.LastName);
         }
     }
 }

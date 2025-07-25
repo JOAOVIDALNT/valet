@@ -10,11 +10,14 @@ namespace valet.test.Builders
         {
             var hasher = new PasswordHasher();
             return new Faker<User>()
-                .RuleFor(x => x.Id, (x) => x.Random.Guid())
-                .RuleFor(x => x.FirstName, (x) => x.Person.FirstName)
-                .RuleFor(x => x.LastName, (x) => x.Person.LastName)
-                .RuleFor(x => x.Email, (x, y) => x.Internet.Email(y.FirstName + y.LastName))
-                .RuleFor(x => x.Password, (x) => hasher.HashPassword(x.Internet.Password()));
+                .CustomInstantiator(f =>
+                {
+                    var firstName = f.Name.FirstName();
+                    var lastName = f.Name.LastName();
+                    var email = f.Internet.Email(firstName, lastName);
+                    var password = f.Internet.Password(8, true, "#");
+                    return new User(firstName, lastName, email, hasher.HashPassword(password));
+                });
         }
     }
 }

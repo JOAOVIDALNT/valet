@@ -26,6 +26,11 @@ namespace valet.lib.Config
 
             services.AddScoped<IUnitOfWork, UnitOfWork<TContext>>();
 
+            if (options.EnableValetHash)
+            {
+                services.UsePasswordHasher();
+            }
+
             if (options.EnableValetAuth)
             {
                 services.AddScoped<IRoleRepository, RoleRepository<TContext>>();
@@ -33,7 +38,6 @@ namespace valet.lib.Config
                 services.AddScoped<IUserRoleRepository, UserRoleRepository<TContext>>();
 
                 services.UseTokenJwt(configuration);
-                services.UsePasswordHasher();
             }
 
             if (options.EnableValetSwaggerGen)
@@ -46,7 +50,7 @@ namespace valet.lib.Config
 
         private static IServiceCollection UsePasswordHasher(this IServiceCollection services)
         {
-            services.AddTransient<IPasswordManager, PasswordManager>();
+            services.AddTransient<IPasswordHasher, PasswordHasher>();
             return services;
         }
 

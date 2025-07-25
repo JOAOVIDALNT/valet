@@ -4,12 +4,13 @@ namespace valet.lib.Auth.Domain.Entities
 {
     public class Role : BaseEntity
     {
+        protected Role() { }
         public Role(string name)
         {
             SetName(name);
         }
-        public string Name { get; private set; } = string.Empty;
-        public virtual ICollection<UserRole> UserRoles { get; private set; } = [];
+        public string Name { get; protected set; } = string.Empty;
+        public virtual ICollection<UserRole> UserRoles { get; protected set; } = [];
 
         protected void SetName(string name)
         {
@@ -33,6 +34,16 @@ namespace valet.lib.Auth.Domain.Entities
                 return;
 
             UserRoles.Add(userRole);
+            Touch();
+        }
+
+        public void RemoveUserRole(UserRole userRole)
+        {
+            if (userRole == null)
+                throw new ArgumentNullException(nameof(userRole), "User role cannot be null.");
+            if (!UserRoles.Contains(userRole))
+                return;
+            UserRoles.Remove(userRole);
             Touch();
         }
 
