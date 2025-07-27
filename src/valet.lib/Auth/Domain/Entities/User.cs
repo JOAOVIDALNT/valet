@@ -1,4 +1,4 @@
-﻿using valet.lib.Core.Domain.Entities;
+﻿    using valet.lib.Core.Domain.Entities;
 
 namespace valet.lib.Auth.Domain.Entities
 {

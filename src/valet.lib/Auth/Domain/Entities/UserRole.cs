@@ -8,24 +8,32 @@ namespace valet.lib.Auth.Domain.Entities
     /// </summary>
     public class UserRole : BaseEntity
     {
+        public UserRole(User user, Role role)
+        {
+            Role = role ?? throw new ArgumentNullException(nameof(role), "Role cannot be null.");
+            User = user ?? throw new ArgumentNullException(nameof(user), "User cannot be null.");
+            UserId = user.Id;
+            RoleId = role.Id;
+        }
+
         /// <summary>
         /// Gets or sets the associated user.
         /// </summary>
-        public virtual User? User { get; set; }
+        public virtual User? User { get; protected set; }
 
         /// <summary>
         /// Gets or sets the associated role.
         /// </summary>
-        public virtual Role? Role { get; set; }
+        public virtual Role? Role { get; protected set; }
 
         /// <summary>
         /// Gets or sets the foreign key identifier for the user.
         /// </summary>
-        public Guid UserId { get; set; }
+        public Guid UserId { get; protected set; }
 
         /// <summary>
         /// Gets or sets the foreign key identifier for the role.
         /// </summary>
-        public Guid RoleId { get; set; }
+        public Guid RoleId { get; protected set; }
     }
 }
