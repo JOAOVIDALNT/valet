@@ -10,10 +10,6 @@ namespace valet.lib.Auth.Service.Token.Middlewares
     /// which validates the presence and validity of a JWT token,
     /// checks if the user exists, and optionally verifies if the user has required roles.
     /// </remarks>
-    /// <param name="roles">
-    /// A comma-separated list of roles required to access the resource.
-    /// If empty or omitted, only token validation and user existence are enforced.
-    /// </param>
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
     public class ValidateUserAttribute : TypeFilterAttribute
     {
