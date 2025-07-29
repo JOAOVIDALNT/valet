@@ -5,11 +5,11 @@ using valet.lib.Auth.Domain.Interfaces;
 
 namespace valet.lib.Auth.Service.Token
 {
-    public class TokenValidator : TokenHandler, ITokenValidator
+    internal class TokenValidator : TokenHandler, ITokenValidator
     {
         private readonly string _signingKey;
 
-        public TokenValidator(string signingKey) => _signingKey = signingKey;
+        internal TokenValidator(string signingKey) => _signingKey = signingKey;
 
         public Guid ValidateAndGetUserIdentifier(string token)
         {

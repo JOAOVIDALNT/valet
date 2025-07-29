@@ -1,6 +1,6 @@
 ﻿namespace valet.lib.Auth.Domain.Interfaces
 {
-    public interface ITokenValidator
+    internal interface ITokenValidator
     {
         Guid ValidateAndGetUserIdentifier(string token);
     }

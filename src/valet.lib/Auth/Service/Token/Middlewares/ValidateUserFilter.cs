@@ -9,13 +9,13 @@ using valet.lib.Core.Exception.Resource;
 using valet.lib.Core.Exception.Response;
 
 namespace valet.lib.Auth.Service.Token.Middlewares
-{ //DOC: DOCUMENTAR ATRIBUTO E FILTROx
-    public class ValidateUserFilter : IAsyncAuthorizationFilter
+{
+    internal class ValidateUserFilter : IAsyncAuthorizationFilter
     {
         private readonly ITokenValidator _tokenValidator;
         private readonly IUserRepository _userRepository;
         private readonly string _roles;
-        public ValidateUserFilter(IUserRepository userRepository, ITokenValidator tokenValidator, string roles)
+        internal ValidateUserFilter(IUserRepository userRepository, ITokenValidator tokenValidator, string roles)
         {
             _userRepository = userRepository;
             _tokenValidator = tokenValidator;

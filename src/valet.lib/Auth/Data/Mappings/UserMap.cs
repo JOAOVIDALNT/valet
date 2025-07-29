@@ -4,7 +4,7 @@ using valet.lib.Auth.Domain.Entities;
 
 namespace valet.lib.Auth.Data.Mappings
 {
-    public class ClauthUserMap : IEntityTypeConfiguration<User>
+    internal class UserMap : IEntityTypeConfiguration<User>
     {
         public void Configure(EntityTypeBuilder<User> builder)
         {

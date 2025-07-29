@@ -5,21 +5,25 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
 	  <PackageId>valet</PackageId>
-	  <Version>2.0.4</Version>
+	  <Version>3.0.0</Version>
 	  <Authors>João Vidal</Authors>
 	  <Company>Awlife Software</Company>
 	  <Description>A simple and lightweight library designed for easy web application setup, providing a complete repository pattern and seamless user authentication management.</Description>
 	  <PackageTags>authentication, authconfig, config, userauth, jwt, bearer, token, hasher, repository, unitofwork</PackageTags>
 	  <RepositoryUrl>https://github.com/JOAOVIDALNT/valet</RepositoryUrl>
+	  <GenerateDocumentationFile>true</GenerateDocumentationFile>
+	  <NoWarn>1591</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
+    <PackageReference Include="BCrypt.Net-Next" Version="4.0.3"/>
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.14" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.3" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.3" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.3"/>
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="7.3.1" />
   </ItemGroup>
+	
+	
 
   <ItemGroup>
     <Compile Update="Core\Exception\Resource\ValetResourceMessageException.Designer.cs">
@@ -35,5 +39,12 @@
       <LastGenOutput>ValetResourceMessageException.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
+
+	<ItemGroup>
+		<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+			<_Parameter1>valet.test</_Parameter1>
+		</AssemblyAttribute>
+		
+	</ItemGroup>
 
 </Project>

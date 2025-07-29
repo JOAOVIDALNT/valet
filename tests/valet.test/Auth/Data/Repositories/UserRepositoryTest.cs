@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using valet.lib.Auth.Data;
 using valet.lib.Auth.Data.Repositories;
+using valet.lib.Auth.Domain.Entities;
 using valet.lib.Core.Data.Repositories;
 using valet.test.Builders;
 
@@ -28,7 +29,7 @@ namespace valet.test.Auth.Data.Repositories
                 var user = UserBuilder.Build();
 
                 await userRepository.CreateAsync(user);
-                await uow.Commit();
+                await uow.CommitAsync();
 
                 var result = await userRepository.GetAsync(x => x.Id == user.Id);
 
@@ -50,7 +51,7 @@ namespace valet.test.Auth.Data.Repositories
                 var user = UserBuilder.Build();
 
                 await userRepository.CreateAsync(user);
-                await uow.Commit();
+                await uow.CommitAsync();
 
                 var result = await userRepository.UserExists(user.Email);
 
@@ -86,13 +87,13 @@ namespace valet.test.Auth.Data.Repositories
                 var uow = new UnitOfWork<AuthDbContext>(context);
 
                 var user = UserBuilder.Build();
-                var role = RoleBuilder.Build();
+                var role = new Role("tester");
                 var userRole = UserRoleBuilder.Build(user, role);
 
                 user.UserRoles.Add(userRole);
 
                 await userRepository.CreateAsync(user);
-                await uow.Commit();
+                await uow.CommitAsync();
 
                 var result = await userRepository.GetUserWithRolesAsync(user.Email);
 

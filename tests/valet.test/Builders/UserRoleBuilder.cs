@@ -6,14 +6,7 @@ namespace valet.test.Builders
     {
         public static UserRole Build(User user, Role role)
         {
-            return new UserRole
-            {
-                Id = Guid.NewGuid(),
-                User = user,
-                Role = role,
-                UserId = user.Id,
-                RoleId = role.Id
-            };
+            return new UserRole(user, role);
         }
     }
 }

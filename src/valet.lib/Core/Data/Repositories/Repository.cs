@@ -4,21 +4,60 @@ using valet.lib.Core.Domain.Interfaces;
 
 namespace valet.lib.Core.Data.Repositories
 {
+    /// <summary>
+    /// Generic repository implementation providing common data access operations
+    /// for entities of type <typeparamref name="T"/>.
+    /// </summary>
+    /// <typeparam name="T">The type of the entity.</typeparam>
     public class Repository<T> : IRepository<T> where T : class
     {
+        /// <summary>
+        /// The Entity Framework database context.
+        /// </summary>
         protected readonly DbContext _db;
+
+        /// <summary>
+        /// The <see cref="DbSet{T}"/> representing the entities in the context.
+        /// </summary>
         protected DbSet<T> dbSet;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Repository{T}"/> class
+        /// with the specified database context.
+        /// </summary>
+        /// <param name="db">The database context.</param>
         public Repository(DbContext db)
         {
             _db = db;
             dbSet = _db.Set<T>();
         }
 
+        /// <summary>
+        /// Asynchronously adds a new entity to the database context.
+        /// </summary>
+        /// <param name="entity">The entity to add.</param>
         public async Task CreateAsync(T entity) => await dbSet.AddAsync(entity);
+
+        /// <summary>
+        /// Removes the specified entity from the database context.
+        /// </summary>
+        /// <param name="entity">The entity to remove.</param>
         public void Delete(T entity) => dbSet.Remove(entity);
+
+        /// <summary>
+        /// Updates the specified entity in the database context.
+        /// </summary>
+        /// <param name="entity">The entity to update.</param>
         public void Update(T entity) => dbSet.Update(entity);
 
+        /// <summary>
+        /// Retrieves a list of entities from the database,
+        /// optionally filtered, paginated, and asynchronously loaded.
+        /// </summary>
+        /// <param name="filter">An optional filter expression to apply.</param>
+        /// <param name="pageSize">The number of items per page. If 0, pagination is ignored.</param>
+        /// <param name="pageNumber">The page number to retrieve (1-based).</param>
+        /// <returns>A list of entities matching the criteria.</returns>
         public async Task<List<T>> GetAllAsync(Expression<Func<T, bool>>? filter = null, int pageSize = 0, int pageNumber = 1)
         {
             IQueryable<T> query = dbSet;
@@ -32,11 +71,21 @@ namespace valet.lib.Core.Data.Repositories
             return await query.ToListAsync();
         }
 
+        /// <summary>
+        /// Retrieves a single entity matching the specified filter,
+        /// optionally tracking changes in the context.
+        /// </summary>
+        /// <param name="filter">An optional filter expression to apply.</param>
+        /// <param name="tracked">
+        /// If <c>true</c>, the entity will be tracked by the context;
+        /// if <c>false</c>, no tracking will be applied (read-only).
+        /// </param>
+        /// <returns>The first entity matching the filter or <c>null</c> if none found.</returns>
         public async Task<T> GetAsync(Expression<Func<T, bool>>? filter = null, bool tracked = true)
         {
             IQueryable<T> query = dbSet;
 
-            if (tracked)
+            if (!tracked)
                 query = query.AsNoTracking();
 
             if (filter != null)

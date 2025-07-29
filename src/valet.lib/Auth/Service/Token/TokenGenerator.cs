@@ -1,15 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Security.Cryptography;
-using System.Text;
 using valet.lib.Auth.Domain.Entities;
 using valet.lib.Auth.Domain.Interfaces;
 
 namespace valet.lib.Auth.Service.Token
 {
-    public class TokenGenerator : TokenHandler, ITokenGenerator
+    internal class TokenGenerator : TokenHandler, ITokenGenerator
     {
         private readonly string _secretKey;
         private readonly uint _expirationMinutes;
@@ -53,8 +50,5 @@ namespace valet.lib.Auth.Service.Token
 
             return claims;
         }
-
- 
-
     }
 }
