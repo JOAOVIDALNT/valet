@@ -1,4 +1,4 @@
-import type { ModuleObj } from "../moduleobj"
+import type { ModuleObj } from "../moduleObj"
 
 type SideNavProps = {
   modules: ModuleObj[]

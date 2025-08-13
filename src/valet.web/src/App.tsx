@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import SideNav from "./components/sidenav"
 import Module from "./components/module";
-import type { ModuleObj } from "./moduleobj";
+import type { ModuleObj } from "./moduleObj";
 import { fetchModulesData } from "./modulesData";
 
 

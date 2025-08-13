@@ -1,4 +1,4 @@
-import type { ModuleObj } from "../moduleobj";
+import type { ModuleObj } from "../moduleObj";
 import Search from "./search";
 
 type ModuleProps = {
