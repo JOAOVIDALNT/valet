@@ -3,6 +3,7 @@ import SideNav from "./components/sidenav"
 import Module from "./components/module";
 import type { ModuleObj } from "./moduleObj";
 import { fetchModulesData } from "./modulesData";
+import Search from "./components/search";
 
 
 function App() {
@@ -24,7 +25,10 @@ function App() {
 
     <div className='flex h-screen bg-black'>
       <SideNav modules={modules} onSelectModule={setSelectedModule} selectedModule={selectedModule}/>
-      <Module module={selectedModule}/>
+      <div className="relative flex-1 ml-64">
+        <Search onSelectModule={setSelectedModule} />
+        <Module module={selectedModule}/>
+      </div>
     </div>
   )
 }

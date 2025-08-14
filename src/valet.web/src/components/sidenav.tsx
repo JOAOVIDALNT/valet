@@ -8,7 +8,7 @@ type SideNavProps = {
 
 export default function SideNav({modules, onSelectModule, selectedModule}: SideNavProps) {
     return (
-        <div className='bg-neutral-900 text=white w-64 px-8 py-4 rounded-r-md border-none text-gray-400'>
+        <div className='fixed top-0 left-0 h-screen bg-neutral-900 w-64 px-8 py-4 rounded-tr-md border-none text-gray-400 overflow-y-auto z-40'>
             <h1 className="pb-5">VALET</h1>
             <nav>
                 {modules.map((module) => (
