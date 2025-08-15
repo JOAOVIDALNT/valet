@@ -38,10 +38,10 @@ export default function Search({onSelectModule} : SearchProps) {
     const start = Math.max(0, index - snippetLength / 2);
     const end = Math.min(content.length, index + query.length + snippetLength / 2);
     let snippet = content.substring(start, end);
-    // Opcional: destaca o termo buscado
+    
     const regex = new RegExp(`(${query})`, "gi");
     snippet = snippet.replace(regex, "<mark>$1</mark>");
-    return snippet;
+    return "..." + snippet + "...";
 }
 
     return (
