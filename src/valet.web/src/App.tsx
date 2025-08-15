@@ -10,6 +10,7 @@ function App() {
   
   const [modules, setModules] = useState<ModuleObj[]>([]);
   const [selectedModule, setSelectedModule] = useState<ModuleObj | null>(null);
+  const [searchTerm, setSearchTerm] = useState<string>("");
 
   useEffect(() => {
       fetchModulesData().then(data => {
@@ -20,14 +21,18 @@ function App() {
       });
   }, [])
   
+  function handleSelectModule(module: ModuleObj, term?: string) {
+      setSelectedModule(module);
+      setSearchTerm(term || "");
+  }
 
   return (
 
     <div className='flex h-screen bg-black'>
-      <SideNav modules={modules} onSelectModule={setSelectedModule} selectedModule={selectedModule}/>
+      <SideNav modules={modules} onSelectModule={m => handleSelectModule(m)} selectedModule={selectedModule}/>
       <div className="relative flex-1 ml-64">
-        <Search onSelectModule={setSelectedModule} />
-        <Module module={selectedModule}/>
+        <Search onSelectModule={(m, term) => handleSelectModule(m, term)} />
+        <Module module={selectedModule} searchTerm={searchTerm}/>
       </div>
     </div>
   )

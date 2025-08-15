@@ -3,7 +3,7 @@ import type { ModuleObj } from "../moduleObj"
 import { fetchModulesData } from "../modulesData";
 
 type SearchProps = {
-    onSelectModule: (module: ModuleObj) => void
+    onSelectModule: (module: ModuleObj, term?: string) => void
 }
 
 export default function Search({onSelectModule} : SearchProps) {
@@ -27,7 +27,7 @@ export default function Search({onSelectModule} : SearchProps) {
     }
 
     function handleClick(module: ModuleObj) {
-        onSelectModule(module);
+        onSelectModule(module, query);
         setQuery("");
         setResults([]);
     }
