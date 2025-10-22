@@ -5,14 +5,14 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
 	  <PackageId>valet</PackageId>
-	  <Version>3.0.1</Version>
+	  <Version>3.0.2</Version>
 	  <Authors>João Vidal</Authors>
 	  <Company>Awlife Software</Company>
 	  <Description>A simple and lightweight library designed for easy web application setup, providing a complete repository pattern and seamless user authentication management.</Description>
 	  <PackageTags>authentication, authconfig, config, userauth, jwt, bearer, token, hasher, repository, unitofwork</PackageTags>
 	  <RepositoryUrl>https://github.com/JOAOVIDALNT/valet</RepositoryUrl>
 	  <GenerateDocumentationFile>true</GenerateDocumentationFile>
-	  <PackageIcon>valet_logo.png</PackageIcon>
+	  <PackageIcon>valet_icon.png</PackageIcon>
 	  <NoWarn>1591</NoWarn>
   </PropertyGroup>
 
@@ -25,7 +25,7 @@
   </ItemGroup>
 	
   <ItemGroup>
-    <None Include="valet_logo.png" Pack="true" PackagePath="\" />
+    <None Include="valet_icon.png" Pack="true" PackagePath="\" />
   </ItemGroup>
 
   <ItemGroup>
