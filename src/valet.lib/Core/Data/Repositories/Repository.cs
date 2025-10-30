@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
+using Microsoft.EntityFrameworkCore.Query;
 using valet.lib.Core.Domain.Interfaces;
 
 namespace valet.lib.Core.Data.Repositories
@@ -58,9 +59,20 @@ namespace valet.lib.Core.Data.Repositories
         /// <param name="pageSize">The number of items per page. If 0, pagination is ignored.</param>
         /// <param name="pageNumber">The page number to retrieve (1-based).</param>
         /// <returns>A list of entities matching the criteria.</returns>
-        public async Task<List<T>> GetAllAsync(Expression<Func<T, bool>>? filter = null, int pageSize = 0, int pageNumber = 1)
+        public async Task<List<T>> GetAllAsync(Expression<Func<T, bool>>? filter = null, 
+            int pageSize = 0, 
+            int pageNumber = 1,
+            bool tracked = true,
+            Func<IQueryable<T>, IIncludableQueryable<T, object>>? include = null
+            )
         {
             IQueryable<T> query = dbSet;
+            
+            if (!tracked)
+                query = query.AsNoTracking();
+            
+            if (include != null)
+                query = include(query);
 
             if (filter != null)
                 query = query.Where(filter);
@@ -81,12 +93,18 @@ namespace valet.lib.Core.Data.Repositories
         /// if <c>false</c>, no tracking will be applied (read-only).
         /// </param>
         /// <returns>The first entity matching the filter or <c>null</c> if none found.</returns>
-        public async Task<T> GetAsync(Expression<Func<T, bool>>? filter = null, bool tracked = true)
+        public async Task<T> GetAsync(Expression<Func<T, bool>>? filter = null,
+            bool tracked = true,
+            Func<IQueryable<T>, IIncludableQueryable<T, object>>? include = null
+            )
         {
             IQueryable<T> query = dbSet;
 
             if (!tracked)
                 query = query.AsNoTracking();
+            
+            if (include != null)
+                query = include(query);
 
             if (filter != null)
                 query = query.Where(filter);
