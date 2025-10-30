@@ -10,12 +10,12 @@ using valet.lib.Core.Exception.Response;
 
 namespace valet.lib.Auth.Service.Token.Middlewares
 {
-    internal class ValidateUserFilter : IAsyncAuthorizationFilter
+    public class ValidateUserFilter : IAsyncAuthorizationFilter
     {
         private readonly ITokenValidator _tokenValidator;
         private readonly IUserRepository _userRepository;
         private readonly string _roles;
-        internal ValidateUserFilter(IUserRepository userRepository, ITokenValidator tokenValidator, string roles)
+        public ValidateUserFilter(IUserRepository userRepository, ITokenValidator tokenValidator, string roles)
         {
             _userRepository = userRepository;
             _tokenValidator = tokenValidator;
