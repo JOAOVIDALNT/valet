@@ -1,4 +1,4 @@
-# VALET
+![alt text](valet_icon.png)
 
 **Valet** is a lightweight library designed to streamline setup and configuration for .NET applications.
 
