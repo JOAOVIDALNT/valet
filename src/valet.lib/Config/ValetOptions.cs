@@ -20,5 +20,10 @@
         /// Gets or sets a value indicating whether Valet Swagger generation with JWT support should be enabled.
         /// </summary>
         public bool EnableValetSwaggerGen { get; set; } = false;
+        
+        /// <summary>
+        /// Gets or sets a value indicating whether patterns for use case and signature should be enabled.
+        /// </summary>
+        public bool EnablePatterns { get; set; } = false;
     }
 }
