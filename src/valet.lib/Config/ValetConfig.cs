@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using System.Reflection;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -11,6 +12,7 @@ using valet.lib.Auth.Service.Hash;
 using valet.lib.Auth.Service.Token;
 using valet.lib.Core.Data.Repositories;
 using valet.lib.Core.Domain.Interfaces;
+using valet.lib.Core.Patterns.UseCases;
 
 namespace valet.lib.Config
 {
@@ -32,11 +34,22 @@ namespace valet.lib.Config
         /// This parameter is optional and only required if <see cref="ValetOptions.EnableValetAuth"/> is set to <c>true</c>.
         /// </param>
         /// <param name="configure">An optional action to configure <see cref="ValetOptions"/>.</param>
+        /// <param name="assembly">
+        /// The assembly is used to auto-inject services.
+        /// This parameter is optional and only required if <see cref="ValetOptions.AutoInjectUseCases"/> is set to <c>true</c>.
+        /// </param>
         /// <returns>The updated <see cref="IServiceCollection"/> instance.</returns>
         /// <exception cref="ArgumentNullException">
         /// Thrown if <paramref name="configuration"/> is <c>null</c> but <see cref="ValetOptions.EnableValetAuth"/> is <c>true</c>.
         /// </exception>
-        public static IServiceCollection AddValet<TContext>(this IServiceCollection services, IConfiguration? configuration = null, Action<ValetOptions>? configure = null) where TContext : AuthDbContext
+        /// /// <exception cref="ArgumentNullException">
+        /// Thrown if <paramref name="assembly"/> is <c>null</c> but <see cref="ValetOptions.AutoInjectUseCases"/> is <c>true</c>.
+        /// </exception>
+        public static IServiceCollection AddValet<TContext>(
+            this IServiceCollection services, 
+            IConfiguration? configuration = null, 
+            Action<ValetOptions>? configure = null,
+            Assembly assembly = null) where TContext : AuthDbContext
         {
             var options = new ValetOptions();
             configure?.Invoke(options);
@@ -45,14 +58,13 @@ namespace valet.lib.Config
             services.AddScoped<IUnitOfWork, UnitOfWork<TContext>>();
 
             if (options.EnableValetHash)
-            {
                 services.UsePasswordHasher();
-            }
 
             if (options.EnableValetAuth)
             {
                 if (configuration == null)
-                    throw new ArgumentNullException(nameof(configuration), "Configuration is required when EnableValetAuth is true.");
+                    throw new ArgumentNullException(nameof(configuration), 
+                        "Configuration is required when EnableValetAuth is true.");
 
                 services.AddScoped<IRoleRepository, RoleRepository<TContext>>();
                 services.AddScoped<IUserRepository, UserRepository<TContext>>();
@@ -62,9 +74,37 @@ namespace valet.lib.Config
             }
 
             if (options.EnableValetSwaggerGen)
-            {
                 services.UseValetSwaggerGen();
+
+            if (options.AutoInjectUseCases)
+            {
+                if (assembly == null)
+                    throw new ArgumentNullException(nameof(assembly), 
+                        "Assembly is required when AutoInjectUseCases is true.");
+                
+                services.InjectUseCases(assembly);
             }
+
+            return services;
+        } 
+        private static IServiceCollection InjectUseCases(
+            this IServiceCollection services,
+            Assembly assembly)
+        {
+            var baseTypes = new[]
+            {
+                typeof(Command<>),
+                typeof(Command<,>),
+                typeof(Query<>),
+                typeof(Query<,>)
+            };
+            
+            var typesToRegister = assembly.GetTypes()
+                .Where(t => t is { IsAbstract: false, IsInterface: false, BaseType.IsGenericType: true })
+                .Where(t => baseTypes.Contains(t.BaseType?.GetGenericTypeDefinition()));
+
+            foreach (var type in typesToRegister)
+                services.AddScoped(type);
 
             return services;
         }
