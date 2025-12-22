@@ -5,7 +5,6 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
 	  <PackageId>valet</PackageId>
-	  <Version>3.2.1</Version>
 	  <Authors>João Vidal</Authors>
 	  <Company>Awlife Software</Company>
 	  <Description>A simple and lightweight library designed for easy web application setup, providing a complete repository pattern and seamless user authentication management.</Description>
@@ -14,10 +13,12 @@
 	  <GenerateDocumentationFile>true</GenerateDocumentationFile>
 	  <PackageIcon>valet_icon.png</PackageIcon>
 	  <NoWarn>1591</NoWarn>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
+    <PackageReference Include="FluentValidation" Version="12.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.14" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.3" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.3" />

@@ -20,5 +20,10 @@
         /// Gets or sets a value indicating whether Valet Swagger generation with JWT support should be enabled.
         /// </summary>
         public bool EnableValetSwaggerGen { get; set; } = false;
+        
+        /// <summary>
+        /// Gets or sets a value indicating whether UseCases should be automatically injected.
+        /// </summary>
+        public bool AutoInjectUseCases { get; set; } = false;
     }
 }
