@@ -2,7 +2,7 @@
 
 namespace valet.lib.Auth.Service.Hash
 {
-    public class PasswordHasher : IPasswordHasher
+    internal class PasswordHasher : IPasswordHasher
     {
         public string HashPassword(string password)
         {

@@ -5,20 +5,50 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
 	  <PackageId>valet</PackageId>
-	  <Version>1.0.0</Version>
 	  <Authors>João Vidal</Authors>
 	  <Company>Awlife Software</Company>
 	  <Description>A simple and lightweight library designed for easy web application setup, providing a complete repository pattern and seamless user authentication management.</Description>
 	  <PackageTags>authentication, authconfig, config, userauth, jwt, bearer, token, hasher, repository, unitofwork</PackageTags>
 	  <RepositoryUrl>https://github.com/JOAOVIDALNT/valet</RepositoryUrl>
+	  <GenerateDocumentationFile>true</GenerateDocumentationFile>
+	  <PackageIcon>valet_icon.png</PackageIcon>
+	  <NoWarn>1591</NoWarn>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
+    <PackageReference Include="FluentValidation" Version="12.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.14" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.3" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.3" />
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="7.3.1" />
   </ItemGroup>
+	
+  <ItemGroup>
+    <None Include="valet_icon.png" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Core\Exception\Resource\ValetResourceMessageException.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ValetResourceMessageException.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Core\Exception\Resource\ValetResourceMessageException.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ValetResourceMessageException.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+
+	<ItemGroup>
+		<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+			<_Parameter1>valet.test</_Parameter1>
+		</AssemblyAttribute>
+		
+	</ItemGroup>
 
 </Project>
