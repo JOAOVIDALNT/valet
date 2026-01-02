@@ -1,6 +1,6 @@
 using FluentValidation;
-using FluentValidation.Results;
 using valet.lib.Core.Domain.Interfaces;
+using ValidationException = valet.lib.Core.Exception.ValidationException;
 
 namespace valet.lib.Core.Patterns.Signature;
 
@@ -12,11 +12,11 @@ public abstract class Signature<TSignature, TValidator> : ISignature
 
     public virtual bool Validate()
     {
-        ValidationResult validationResult =
+        var validationResult =
             SignatureValidator.Validate((TSignature)this);
 
         if (!validationResult.IsValid)
-            throw new ValidationException(validationResult.Errors);
+            throw new ValidationException(validationResult.Errors.Select(error => error.ErrorMessage).ToList());
 
         return validationResult.IsValid;
     }
