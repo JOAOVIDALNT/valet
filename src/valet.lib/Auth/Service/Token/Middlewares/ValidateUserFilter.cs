@@ -30,7 +30,7 @@ namespace valet.lib.Auth.Service.Token.Middlewares
 
                 var userIdentifier = _tokenValidator.ValidateAndGetUserIdentifier(token);
 
-                if(!await _userRepository.UserExists(userIdentifier))
+                if(!await _userRepository.UserExistsAsync(userIdentifier))
                     throw new UnauthorizedException(ValetResourceMessageException.USER_UNAUTHORIZED);
 
                 if (!string.IsNullOrWhiteSpace(_roles))
