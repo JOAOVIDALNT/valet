@@ -10,5 +10,10 @@
         /// </summary>
         /// <returns>A task representing the asynchronous commit operation.</returns>
         Task CommitAsync();
+
+        /// <summary>
+        /// Commits all changes made in the current transaction.
+        /// </summary>
+        void Commit();
     }
 }

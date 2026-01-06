@@ -53,7 +53,7 @@ namespace valet.test.Auth.Data.Repositories
                 await userRepository.CreateAsync(user);
                 await uow.CommitAsync();
 
-                var result = await userRepository.UserExists(user.Email);
+                var result = await userRepository.UserExistsAsync(user.Email);
 
                 Assert.True(result);
             }
@@ -70,7 +70,7 @@ namespace valet.test.Auth.Data.Repositories
 
                 var user = UserBuilder.Build();
 
-                var result = await userRepository.UserExists(user.Email);
+                var result = await userRepository.UserExistsAsync(user.Email);
 
                 Assert.False(result);
             }
