@@ -10,13 +10,24 @@ namespace valet.lib.Core.Domain.Interfaces
     public interface IRepository<T> where T : class
     {
         /// <summary>
-        /// Retrieves a list of entities from the database,
-        /// optionally filtered, paginated, and asynchronously loaded.
+        /// Asynchronously retrieves a list of entities from the database,
+        /// optionally filtered, paginated, tracked, and including related data.
         /// </summary>
-        /// <param name="filter">An optional filter expression to apply.</param>
-        /// <param name="pageSize">The number of items per page. If 0, pagination is ignored.</param>
+        /// <param name="filter">An optional filter expression.</param>
+        /// <param name="pageSize">
+        /// The number of items per page. If set to <c>0</c>, pagination is not applied.
+        /// </param>
         /// <param name="pageNumber">The page number to retrieve (1-based).</param>
-        /// <returns>A list of entities matching the criteria.</returns>
+        /// <param name="tracked">
+        /// Indicates whether the entities should be tracked by the context.
+        /// </param>
+        /// <param name="include">
+        /// An optional function to include related navigation properties.
+        /// </param>
+        /// <returns>
+        /// A task that represents the asynchronous operation.
+        /// The task result contains a list of entities matching the criteria.
+        /// </returns>
         Task<List<T>> GetAllAsync(Expression<Func<T, bool>>? filter = null, 
             int pageSize = 0, 
             int pageNumber = 1, 
@@ -25,12 +36,22 @@ namespace valet.lib.Core.Domain.Interfaces
         
         /// <summary>
         /// Retrieves a list of entities from the database,
-        /// optionally filtered and paginated.
+        /// optionally filtered, paginated, tracked, and including related data.
         /// </summary>
-        /// <param name="filter">An optional filter expression to apply.</param>
-        /// <param name="pageSize">The number of items per page. If 0, pagination is ignored.</param>
+        /// <param name="filter">An optional filter expression.</param>
+        /// <param name="pageSize">
+        /// The number of items per page. If set to <c>0</c>, pagination is not applied.
+        /// </param>
         /// <param name="pageNumber">The page number to retrieve (1-based).</param>
-        /// <returns>A list of entities matching the criteria.</returns>
+        /// <param name="tracked">
+        /// Indicates whether the entities should be tracked by the context.
+        /// </param>
+        /// <param name="include">
+        /// An optional function to include related navigation properties.
+        /// </param>
+        /// <returns>
+        /// A list of entities matching the specified criteria.
+        /// </returns>
         List<T> GetAll(Expression<Func<T, bool>>? filter = null, 
             int pageSize = 0, 
             int pageNumber = 1, 
@@ -38,29 +59,39 @@ namespace valet.lib.Core.Domain.Interfaces
             Func<IQueryable<T>, IIncludableQueryable<T, object>>? include = null);
 
         /// <summary>
-        /// Retrieves a single entity matching the specified filter,
-        /// optionally tracking changes in the context.
+        /// Asynchronously retrieves a single entity that matches the specified filter,
+        /// optionally tracking changes and including related data.
         /// </summary>
-        /// <param name="filter">An optional filter expression to apply.</param>
+        /// <param name="filter">An optional filter expression.</param>
         /// <param name="tracked">
-        /// If <c>true</c>, the entity will be tracked by the context;
-        /// if <c>false</c>, no tracking will be applied (read-only).
+        /// Indicates whether the entity should be tracked by the context.
         /// </param>
-        /// <returns>The first entity matching the filter or <c>null</c> if none found.</returns>
+        /// <param name="include">
+        /// An optional function to include related navigation properties.
+        /// </param>
+        /// <returns>
+        /// A task that represents the asynchronous operation.
+        /// The task result contains the first matching entity,
+        /// or <c>null</c> if no entity is found.
+        /// </returns>
         Task<T> GetAsync(Expression<Func<T, bool>>? filter = null, 
             bool tracked = true, 
             Func<IQueryable<T>, IIncludableQueryable<T, object>>? include = null);
         
         /// <summary>
-        /// Retrieves a single entity matching the specified filter,
-        /// optionally tracking changes in the context.
+        /// Retrieves a single entity that matches the specified filter,
+        /// optionally tracking changes and including related data.
         /// </summary>
-        /// <param name="filter">An optional filter expression to apply.</param>
+        /// <param name="filter">An optional filter expression.</param>
         /// <param name="tracked">
-        /// If <c>true</c>, the entity will be tracked by the context;
-        /// if <c>false</c>, no tracking will be applied (read-only).
+        /// Indicates whether the entity should be tracked by the context.
         /// </param>
-        /// <returns>The first entity matching the filter or <c>null</c> if none found.</returns>
+        /// <param name="include">
+        /// An optional function to include related navigation properties.
+        /// </param>
+        /// <returns>
+        /// The first matching entity, or <c>null</c> if no entity is found.
+        /// </returns>
         T Get(Expression<Func<T, bool>>? filter = null, 
             bool tracked = true, 
             Func<IQueryable<T>, IIncludableQueryable<T, object>>? include = null);
@@ -69,10 +100,11 @@ namespace valet.lib.Core.Domain.Interfaces
         /// Asynchronously adds a new entity to the database context.
         /// </summary>
         /// <param name="entity">The entity to add.</param>
+        /// <returns>A task that represents the asynchronous operation.</returns>
         Task CreateAsync(T entity);
         
         /// <summary>
-        /// Add a new entity to the database context.
+        /// Adds a new entity to the database context.
         /// </summary>
         /// <param name="entity">The entity to add.</param>
         void Create(T entity);

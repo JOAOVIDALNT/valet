@@ -23,6 +23,9 @@ namespace valet.lib.Auth.Domain.Interfaces.Repositories
         /// Checks if a role with the specified name exists.
         /// </summary>
         /// <param name="name">The name of the role to check.</param>
+        /// <returns>
+        /// <c>true</c> if a role with the given name exists; otherwise, <c>false</c>.
+        /// </returns>
         bool RoleExists(string name);
     }
 }

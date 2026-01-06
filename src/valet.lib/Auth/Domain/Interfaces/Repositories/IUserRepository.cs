@@ -23,6 +23,9 @@ namespace valet.lib.Auth.Domain.Interfaces.Repositories
         /// Checks if a user with the specified email exists.
         /// </summary>
         /// <param name="email">The email of the user to check.</param>
+        /// <returns>
+        /// <c>true</c> if a user with the given email exists; otherwise, <c>false</c>.
+        /// </returns>
         bool UserExists(string email);
 
         /// <summary>
@@ -39,6 +42,9 @@ namespace valet.lib.Auth.Domain.Interfaces.Repositories
         /// Checks if a user with the specified identifier exists.
         /// </summary>
         /// <param name="identifier">The unique identifier (GUID) of the user to check.</param>
+        /// <returns>
+        /// <c>true</c> if a user with the given identifier exists; otherwise, <c>false</c>.
+        /// </returns>
         bool UserExists(Guid identifier);
         
         /// <summary>
@@ -55,6 +61,9 @@ namespace valet.lib.Auth.Domain.Interfaces.Repositories
         /// Retrieves a user by email along with their associated roles.
         /// </summary>
         /// <param name="email">The email of the user to retrieve.</param>
+        /// <returns>
+        /// The <see cref="User"/> including its associated roles.
+        /// </returns>
         User GetUserWithRoles(string email);
     }
 }
