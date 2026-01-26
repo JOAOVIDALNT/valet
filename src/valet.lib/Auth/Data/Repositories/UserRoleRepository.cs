@@ -1,5 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-using valet.lib.Auth.Domain.Entities;
+﻿using valet.lib.Auth.Domain.Entities;
 using valet.lib.Auth.Domain.Interfaces.Repositories;
 using valet.lib.Core.Data.Repositories;
 
