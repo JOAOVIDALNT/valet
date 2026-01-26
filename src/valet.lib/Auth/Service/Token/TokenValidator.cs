@@ -25,7 +25,7 @@ namespace valet.lib.Auth.Service.Token
 
             var principal = tokenHandler.ValidateToken(token, validationParameter, out _);
 
-            var userIdentifier = principal.Claims.First(c => c.Type == ClaimTypes.Sid).Value;
+            var userIdentifier = principal.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value;
 
             return Guid.Parse(userIdentifier);
         }

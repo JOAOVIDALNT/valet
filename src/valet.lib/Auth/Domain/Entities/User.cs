@@ -15,33 +15,19 @@ namespace valet.lib.Auth.Domain.Entities
         /// <summary>
         /// Initializes a new instance of the <see cref="User"/> class with specified personal data.
         /// </summary>
-        /// <param name="firstName">User's first name. Cannot be null or empty.</param>
-        /// <param name="lastName">User's last name. Cannot be null or empty.</param>
-        /// <param name="email">User's email. Cannot be null or empty.</param>
+        /// <param name="login">User's login. Cannot be null or empty.</param>
         /// <param name="password">User's password. Cannot be null or empty.</param>
         /// <exception cref="ArgumentException">Thrown when any parameter is null or empty.</exception>
-        public User(string firstName, string lastName, string email, string password)
+        public User(string login, string password)
         {
-            SetFirstName(firstName);
-            SetLastName(lastName);
-            SetEmail(email);
+            SetLogin(login);
             SetPassword(password);
         }
-
+        
         /// <summary>
-        /// Gets the user's first name.
+        /// Gets the user's login.
         /// </summary>
-        public string FirstName { get; protected set; } = string.Empty;
-
-        /// <summary>
-        /// Gets the user's last name.
-        /// </summary>
-        public string LastName { get; protected set; } = string.Empty;
-
-        /// <summary>
-        /// Gets the user's email address.
-        /// </summary>
-        public string Email { get; protected set; } = string.Empty;
+        public string Login { get; protected set; } = string.Empty;
 
         /// <summary>
         /// Gets the password of the user.
@@ -64,63 +50,25 @@ namespace valet.lib.Auth.Domain.Entities
         }
 
         /// <summary>
-        /// Updates the user's email address.
+        /// Updates the user's login.
         /// </summary>
-        /// <param name="email">The new email. Cannot be null or empty.</param>
-        public void UpdateEmail(string email)
+        /// <param name="login">The new login. Cannot be null or empty.</param>
+        public void UpdateLogin(string login)
         {
-            SetEmail(email);
+            SetLogin(login);
             Touch();
         }
 
         /// <summary>
-        /// Updates the user's first and last name.
+        /// Sets the user's login with validation.
         /// </summary>
-        /// <param name="firstName">The new first name. Cannot be null or empty.</param>
-        /// <param name="lastName">The new last name. Cannot be null or empty.</param>
-        public void UpdateName(string firstName, string lastName)
+        /// <param name="login">The login to set. Cannot be null or empty.</param>
+        /// <exception cref="ArgumentException">Thrown when <paramref name="login"/> is null or empty.</exception>
+        protected void SetLogin(string login)
         {
-            SetFirstName(firstName);
-            SetLastName(lastName);
-            Touch();
-        }
-
-        /// <summary>
-        /// Sets the user's first name with validation.
-        /// </summary>
-        /// <param name="firstName">The first name to set. Cannot be null or empty.</param>
-        /// <exception cref="ArgumentException">Thrown when <paramref name="firstName"/> is null or empty.</exception>
-        protected void SetFirstName(string firstName)
-        {
-            if (string.IsNullOrWhiteSpace(firstName))
-                throw new ArgumentException("First name cannot be null or empty.", nameof(firstName));
-
-            this.FirstName = firstName;
-        }
-
-        /// <summary>
-        /// Sets the user's last name with validation.
-        /// </summary>
-        /// <param name="lastName">The last name to set. Cannot be null or empty.</param>
-        /// <exception cref="ArgumentException">Thrown when <paramref name="lastName"/> is null or empty.</exception>
-        protected void SetLastName(string lastName)
-        {
-            if (string.IsNullOrWhiteSpace(lastName))
-                throw new ArgumentException("Last name cannot be null or empty.", nameof(lastName));
-
-            this.LastName = lastName;
-        }
-
-        /// <summary>
-        /// Sets the user's email address with validation.
-        /// </summary>
-        /// <param name="email">The email to set. Cannot be null or empty.</param>
-        /// <exception cref="ArgumentException">Thrown when <paramref name="email"/> is null or empty.</exception>
-        protected void SetEmail(string email)
-        {
-            if (string.IsNullOrWhiteSpace(email))
-                throw new ArgumentException("Email cannot be null or empty.", nameof(email));
-            this.Email = email;
+            if (string.IsNullOrWhiteSpace(login))
+                throw new ArgumentException("Login cannot be null or empty.", nameof(login));
+            this.Login = login;
         }
 
         /// <summary>

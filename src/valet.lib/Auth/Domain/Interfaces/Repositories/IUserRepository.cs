@@ -12,21 +12,21 @@ namespace valet.lib.Auth.Domain.Interfaces.Repositories
         /// <summary>
         /// Checks if a user with the specified email exists.
         /// </summary>
-        /// <param name="email">The email of the user to check.</param>
+        /// <param name="login">The email of the user to check.</param>
         /// <returns>
         /// A <see cref="Task{TResult}"/> that represents the asynchronous operation.
         /// The task result contains <c>true</c> if a user with the given email exists; otherwise, <c>false</c>.
         /// </returns>
-        Task<bool> UserExistsAsync(string email);
+        Task<bool> UserExistsAsync(string login);
         
         /// <summary>
         /// Checks if a user with the specified email exists.
         /// </summary>
-        /// <param name="email">The email of the user to check.</param>
+        /// <param name="login">The email of the user to check.</param>
         /// <returns>
         /// <c>true</c> if a user with the given email exists; otherwise, <c>false</c>.
         /// </returns>
-        bool UserExists(string email);
+        bool UserExists(string login);
 
         /// <summary>
         /// Checks if a user with the specified identifier exists.
@@ -50,20 +50,20 @@ namespace valet.lib.Auth.Domain.Interfaces.Repositories
         /// <summary>
         /// Retrieves a user by email along with their associated roles.
         /// </summary>
-        /// <param name="email">The email of the user to retrieve.</param>
+        /// <param name="login">The email of the user to retrieve.</param>
         /// <returns>
         /// A <see cref="Task{TResult}"/> that represents the asynchronous operation.
         /// The task result contains the <see cref="User"/> including its roles.
         /// </returns>
-        Task<User> GetUserWithRolesAsync(string email);
+        Task<User> GetUserWithRolesAsync(string login);
         
         /// <summary>
         /// Retrieves a user by email along with their associated roles.
         /// </summary>
-        /// <param name="email">The email of the user to retrieve.</param>
+        /// <param name="login">The email of the user to retrieve.</param>
         /// <returns>
         /// The <see cref="User"/> including its associated roles.
         /// </returns>
-        User GetUserWithRoles(string email);
+        User GetUserWithRoles(string login);
     }
 }
