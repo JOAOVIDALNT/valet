@@ -13,32 +13,41 @@ namespace valet.lib.Core.Domain.Interfaces
         /// Asynchronously retrieves a list of entities from the database,
         /// optionally filtered, paginated, tracked, and including related data.
         /// </summary>
-        /// <param name="filter">An optional filter expression.</param>
+        /// <param name="query">
+        /// An optional function used to compose the query.
+        /// This function may apply filtering, includes, ordering, projections,
+        /// or other transformations supported by Entity Framework.
+        /// Client-side evaluation and query materialization
+        /// (e.g. ToList, AsEnumerable) should be avoided.
+        /// </param>
         /// <param name="pageSize">
         /// The number of items per page. If set to <c>0</c>, pagination is not applied.
         /// </param>
         /// <param name="pageNumber">The page number to retrieve (1-based).</param>
         /// <param name="tracked">
         /// Indicates whether the entities should be tracked by the context.
-        /// </param>
-        /// <param name="include">
-        /// An optional function to include related navigation properties.
         /// </param>
         /// <returns>
         /// A task that represents the asynchronous operation.
         /// The task result contains a list of entities matching the criteria.
         /// </returns>
-        Task<List<T>> GetAllAsync(Expression<Func<T, bool>>? filter = null, 
+        Task<List<T>> GetAllAsync(
+            Func<IQueryable<T>, IQueryable<T>>? query = null,
             int pageSize = 0, 
             int pageNumber = 1, 
-            bool tracked = true, 
-            Func<IQueryable<T>, IIncludableQueryable<T, object>>? include = null);
+            bool tracked = false);
         
         /// <summary>
         /// Retrieves a list of entities from the database,
         /// optionally filtered, paginated, tracked, and including related data.
         /// </summary>
-        /// <param name="filter">An optional filter expression.</param>
+        /// <param name="query">
+        /// An optional function used to compose the query.
+        /// This function may apply filtering, includes, ordering, projections,
+        /// or other transformations supported by Entity Framework.
+        /// Client-side evaluation and query materialization
+        /// (e.g. ToList, AsEnumerable) should be avoided.
+        /// </param>
         /// <param name="pageSize">
         /// The number of items per page. If set to <c>0</c>, pagination is not applied.
         /// </param>
@@ -46,55 +55,58 @@ namespace valet.lib.Core.Domain.Interfaces
         /// <param name="tracked">
         /// Indicates whether the entities should be tracked by the context.
         /// </param>
-        /// <param name="include">
-        /// An optional function to include related navigation properties.
-        /// </param>
         /// <returns>
         /// A list of entities matching the specified criteria.
         /// </returns>
-        List<T> GetAll(Expression<Func<T, bool>>? filter = null, 
+        List<T> GetAll(
+            Func<IQueryable<T>, IQueryable<T>>? query = null,
             int pageSize = 0, 
             int pageNumber = 1, 
-            bool tracked = true, 
-            Func<IQueryable<T>, IIncludableQueryable<T, object>>? include = null);
+            bool tracked = false);
 
         /// <summary>
         /// Asynchronously retrieves a single entity that matches the specified filter,
         /// optionally tracking changes and including related data.
         /// </summary>
-        /// <param name="filter">An optional filter expression.</param>
+        /// <param name="query">
+        /// An optional function used to compose the query.
+        /// This function may apply filtering, includes, ordering, projections,
+        /// or other transformations supported by Entity Framework.
+        /// Client-side evaluation and query materialization
+        /// (e.g. ToList, AsEnumerable) should be avoided.
+        /// </param>
         /// <param name="tracked">
         /// Indicates whether the entity should be tracked by the context.
-        /// </param>
-        /// <param name="include">
-        /// An optional function to include related navigation properties.
         /// </param>
         /// <returns>
         /// A task that represents the asynchronous operation.
         /// The task result contains the first matching entity,
         /// or <c>null</c> if no entity is found.
         /// </returns>
-        Task<T> GetAsync(Expression<Func<T, bool>>? filter = null, 
-            bool tracked = true, 
-            Func<IQueryable<T>, IIncludableQueryable<T, object>>? include = null);
+        Task<T> GetAsync(
+            Func<IQueryable<T>, IQueryable<T>>? query = null,
+            bool tracked = false);
         
         /// <summary>
         /// Retrieves a single entity that matches the specified filter,
         /// optionally tracking changes and including related data.
         /// </summary>
-        /// <param name="filter">An optional filter expression.</param>
+        /// <param name="query">
+        /// An optional function used to compose the query.
+        /// This function may apply filtering, includes, ordering, projections,
+        /// or other transformations supported by Entity Framework.
+        /// Client-side evaluation and query materialization
+        /// (e.g. ToList, AsEnumerable) should be avoided.
+        /// </param>
         /// <param name="tracked">
         /// Indicates whether the entity should be tracked by the context.
-        /// </param>
-        /// <param name="include">
-        /// An optional function to include related navigation properties.
         /// </param>
         /// <returns>
         /// The first matching entity, or <c>null</c> if no entity is found.
         /// </returns>
-        T Get(Expression<Func<T, bool>>? filter = null, 
-            bool tracked = true, 
-            Func<IQueryable<T>, IIncludableQueryable<T, object>>? include = null);
+        T Get(
+            Func<IQueryable<T>, IQueryable<T>>? query = null,
+            bool tracked = false);
 
         /// <summary>
         /// Asynchronously adds a new entity to the database context.

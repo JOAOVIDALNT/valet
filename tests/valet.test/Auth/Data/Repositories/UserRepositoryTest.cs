@@ -31,7 +31,9 @@ namespace valet.test.Auth.Data.Repositories
                 await userRepository.CreateAsync(user);
                 await uow.CommitAsync();
 
-                var result = await userRepository.GetAsync(x => x.Id == user.Id);
+                var result = await userRepository
+                    .GetAsync(q => q
+                        .Where(x => x.Id == user.Id));
 
                 Assert.NotNull(result);
                 Assert.Equal(result.Login, user.Login);
