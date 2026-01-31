@@ -32,17 +32,11 @@ namespace valet.lib.Core.Data.Repositories
         }
         
         public async Task CreateAsync(T entity) => await dbSet.AddAsync(entity);
-        
-
-        public void Create(T entity) => dbSet.Add(entity);
-
 
         public void Delete(T entity) => dbSet.Remove(entity);
 
-
         public void Update(T entity) => dbSet.Update(entity);
-
-       
+        
         public async Task<List<T>> GetAllAsync(
             Func<IQueryable<T>, IQueryable<T>>? query = null,
             int pageSize = 0, 
@@ -61,24 +55,6 @@ namespace valet.lib.Core.Data.Repositories
             return await q.ToListAsync();
         }
         
-        public List<T> GetAll(
-            Func<IQueryable<T>, IQueryable<T>>? query = null,
-            int pageSize = 0, 
-            int pageNumber = 1,
-            bool tracked = false
-        )
-        {
-            IQueryable<T> q = tracked ? dbSet : dbSet.AsNoTracking();
-
-            if (query != null)
-                q = query(q);
-
-            if (pageSize > 0)
-                q = q.Skip(pageSize * (pageNumber - 1)).Take(pageSize);
-
-            return q.ToList();
-        }
-        
         public async Task<T> GetAsync(
             Func<IQueryable<T>, IQueryable<T>>? query = null,
             bool tracked = false
@@ -94,19 +70,5 @@ namespace valet.lib.Core.Data.Repositories
 #pragma warning restore CS8603 // Possible null reference return.
         }
         
-        public T Get(
-            Func<IQueryable<T>, IQueryable<T>>? query = null,
-            bool tracked = false
-        )
-        {
-            IQueryable<T> q = tracked ? dbSet : dbSet.AsNoTracking();
-
-            if (query != null)
-                q = query(q);
-
-#pragma warning disable CS8603 // Possible null reference return.
-            return q.FirstOrDefault();
-#pragma warning restore CS8603 // Possible null reference return.
-        }
     }
 }

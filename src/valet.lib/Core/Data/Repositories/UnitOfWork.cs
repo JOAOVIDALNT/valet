@@ -8,6 +8,5 @@ namespace valet.lib.Core.Data.Repositories
         protected readonly TContext _db;
         public UnitOfWork(TContext db) => _db = db;
         public async Task CommitAsync() => await _db.SaveChangesAsync();
-        public void Commit() => _db.SaveChanges();
     }
 }

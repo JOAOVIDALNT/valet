@@ -8,6 +8,5 @@ namespace valet.lib.Auth.Data.Repositories
     internal class RoleRepository<TContext>(TContext db) : Repository<Role>(db), IRoleRepository where TContext : AuthDbContext
     {
         public async Task<bool> RoleExistsAsync(string name) => await dbSet.AnyAsync(x => x.Name == name);
-        public bool RoleExists(string name) => dbSet.Any(x => x.Name == name);
     }
 }

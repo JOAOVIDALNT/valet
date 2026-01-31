@@ -38,33 +38,6 @@ namespace valet.lib.Core.Domain.Interfaces
             bool tracked = false);
         
         /// <summary>
-        /// Retrieves a list of entities from the database,
-        /// optionally filtered, paginated, tracked, and including related data.
-        /// </summary>
-        /// <param name="query">
-        /// An optional function used to compose the query.
-        /// This function may apply filtering, includes, ordering, projections,
-        /// or other transformations supported by Entity Framework.
-        /// Client-side evaluation and query materialization
-        /// (e.g. ToList, AsEnumerable) should be avoided.
-        /// </param>
-        /// <param name="pageSize">
-        /// The number of items per page. If set to <c>0</c>, pagination is not applied.
-        /// </param>
-        /// <param name="pageNumber">The page number to retrieve (1-based).</param>
-        /// <param name="tracked">
-        /// Indicates whether the entities should be tracked by the context.
-        /// </param>
-        /// <returns>
-        /// A list of entities matching the specified criteria.
-        /// </returns>
-        List<T> GetAll(
-            Func<IQueryable<T>, IQueryable<T>>? query = null,
-            int pageSize = 0, 
-            int pageNumber = 1, 
-            bool tracked = false);
-
-        /// <summary>
         /// Asynchronously retrieves a single entity that matches the specified filter,
         /// optionally tracking changes and including related data.
         /// </summary>
@@ -86,27 +59,6 @@ namespace valet.lib.Core.Domain.Interfaces
         Task<T> GetAsync(
             Func<IQueryable<T>, IQueryable<T>>? query = null,
             bool tracked = false);
-        
-        /// <summary>
-        /// Retrieves a single entity that matches the specified filter,
-        /// optionally tracking changes and including related data.
-        /// </summary>
-        /// <param name="query">
-        /// An optional function used to compose the query.
-        /// This function may apply filtering, includes, ordering, projections,
-        /// or other transformations supported by Entity Framework.
-        /// Client-side evaluation and query materialization
-        /// (e.g. ToList, AsEnumerable) should be avoided.
-        /// </param>
-        /// <param name="tracked">
-        /// Indicates whether the entity should be tracked by the context.
-        /// </param>
-        /// <returns>
-        /// The first matching entity, or <c>null</c> if no entity is found.
-        /// </returns>
-        T Get(
-            Func<IQueryable<T>, IQueryable<T>>? query = null,
-            bool tracked = false);
 
         /// <summary>
         /// Asynchronously adds a new entity to the database context.
@@ -115,12 +67,6 @@ namespace valet.lib.Core.Domain.Interfaces
         /// <returns>A task that represents the asynchronous operation.</returns>
         Task CreateAsync(T entity);
         
-        /// <summary>
-        /// Adds a new entity to the database context.
-        /// </summary>
-        /// <param name="entity">The entity to add.</param>
-        void Create(T entity);
-
         /// <summary>
         /// Removes the specified entity from the database context.
         /// </summary>
