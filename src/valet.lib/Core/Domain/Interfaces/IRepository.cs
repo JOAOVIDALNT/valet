@@ -56,7 +56,7 @@ namespace valet.lib.Core.Domain.Interfaces
         /// The task result contains the first matching entity,
         /// or <c>null</c> if no entity is found.
         /// </returns>
-        Task<T> GetAsync(
+        Task<T?> GetAsync(
             Func<IQueryable<T>, IQueryable<T>>? query = null,
             bool tracked = false);
 

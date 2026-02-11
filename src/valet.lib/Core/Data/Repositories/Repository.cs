@@ -55,7 +55,7 @@ namespace valet.lib.Core.Data.Repositories
             return await q.ToListAsync();
         }
         
-        public async Task<T> GetAsync(
+        public async Task<T?> GetAsync(
             Func<IQueryable<T>, IQueryable<T>>? query = null,
             bool tracked = false
             )
@@ -64,10 +64,8 @@ namespace valet.lib.Core.Data.Repositories
 
             if (query != null)
                 q = query(q);
-
-#pragma warning disable CS8603 // Possible null reference return.
+            
             return await q.FirstOrDefaultAsync();
-#pragma warning restore CS8603 // Possible null reference return.
         }
         
     }
