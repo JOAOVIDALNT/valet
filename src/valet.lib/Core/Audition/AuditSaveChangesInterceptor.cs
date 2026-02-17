@@ -17,15 +17,17 @@ public class AuditSaveChangesInterceptor : SaveChangesInterceptor
         DbContextEventData eventData, 
         InterceptionResult<int> result)
     {
-        return base.SavingChanges(eventData, result);
+        ApplyAudit(eventData.Context);
+        return result;
     }
 
     public override ValueTask<InterceptionResult<int>> SavingChangesAsync(
         DbContextEventData eventData, 
         InterceptionResult<int> result,
-        CancellationToken cancellationToken = new CancellationToken())
+        CancellationToken cancellationToken = default)
     {
-        return base.SavingChangesAsync(eventData, result, cancellationToken);
+        ApplyAudit(eventData.Context);
+        return ValueTask.FromResult(result);
     }
 
     private void ApplyAudit(DbContext? context)

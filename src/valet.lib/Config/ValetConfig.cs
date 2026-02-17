@@ -1,12 +1,13 @@
 ﻿using System.Reflection;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
 using System.Text;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using valet.lib.Auth.Data;
 using valet.lib.Auth.Data.Repositories;
 using valet.lib.Auth.Domain.Interfaces;
@@ -21,34 +22,51 @@ using valet.lib.Core.Patterns.UseCases;
 namespace valet.lib.Config
 {
     /// <summary>
-    /// Provides extension methods to configure and register Valet authentication,
-    /// hashing, and Swagger services in the dependency injection container.
+    /// Provides extension methods to register and configure Valet services
+    /// in the dependency injection container.
     /// </summary>
+    /// <remarks>
+    /// Features are enabled explicitly through <see cref="ValetOptions"/> fluent methods
+    /// such as <c>UseAuth()</c>, <c>UseHashing()</c>, <c>UseSwaggerGen()</c>
+    /// and <c>UseAuditing()</c>.
+    /// 
+    /// Only the features explicitly enabled will be registered.
+    /// </remarks>
     public static class ValetConfig
     {
         /// <summary>
-        /// Adds and configures Valet services to the service collection,
-        /// including authentication, password hashing, and Swagger generation,
-        /// based on the provided <see cref="ValetOptions"/> configuration.
+        /// Adds and configures Valet services to the service collection.
         /// </summary>
-        /// <typeparam name="TContext">The <see cref="AuthDbContext"/> type used for persistence.</typeparam>
-        /// <param name="services">The service collection to which Valet services will be added.</param>
+        /// <typeparam name="TContext">
+        /// The <see cref="AuthDbContext"/> implementation used for persistence.
+        /// </typeparam>
+        /// <param name="services">
+        /// The service collection where Valet services will be registered.
+        /// </param>
         /// <param name="configuration">
         /// The application configuration used to read JWT settings.
-        /// This parameter is optional and only required if <see cref="ValetOptions.EnableValetAuth"/> is set to <c>true</c>.
+        /// This parameter is required only when <c>UseAuth()</c> is enabled.
         /// </param>
-        /// <param name="configure">An optional action to configure <see cref="ValetOptions"/>.</param>
-        /// <param name="assembly">
-        /// The assembly is used to auto-inject services.
-        /// This parameter is optional and only required if <see cref="ValetOptions.AutoInjectUseCases"/> is set to <c>true</c>.
+        /// <param name="configure">
+        /// An optional delegate to configure <see cref="ValetOptions"/>.
+        /// Use this to enable features such as authentication, hashing,
+        /// Swagger integration, auditing, and use case injection.
         /// </param>
-        /// <returns>The updated <see cref="IServiceCollection"/> instance.</returns>
+        /// <returns>
+        /// The updated <see cref="IServiceCollection"/> instance.
+        /// </returns>
         /// <exception cref="ArgumentNullException">
-        /// Thrown if <paramref name="configuration"/> is <c>null</c> but <see cref="ValetOptions.EnableValetAuth"/> is <c>true</c>.
+        /// Thrown when authentication is enabled via <c>UseAuth()</c>
+        /// and <paramref name="configuration"/> is <c>null</c>.
         /// </exception>
-        /// /// <exception cref="ArgumentNullException">
-        /// Thrown if <paramref name="assembly"/> is <c>null</c> but <see cref="ValetOptions.AutoInjectUseCases"/> is <c>true</c>.
-        /// </exception>
+        /// <remarks>
+        /// If no assemblies are specified via <c>AddUseCasesFrom&lt;T&gt;()</c>,
+        /// no automatic use case injection will occur.
+        /// 
+        /// Interceptors registered through <c>UseAuditing()</c> or other
+        /// extension methods are added using <c>TryAddEnumerable</c>,
+        /// ensuring they do not override interceptors defined by the consumer.
+        /// </remarks>
         public static IServiceCollection AddValet<TContext>(
             this IServiceCollection services, 
             IConfiguration? configuration = null, 
@@ -59,11 +77,12 @@ namespace valet.lib.Config
             services.AddSingleton(options);
 
             services.AddScoped<IUnitOfWork, UnitOfWork<TContext>>();
+            services.AddSingleton<ISystemClock, SystemClock>();
 
-            if (options.EnableValetHash)
+            if (options.ValetHashFeature)
                 services.UsePasswordHasher();
 
-            if (options.EnableValetAuth)
+            if (options.ValetAuthFeature)
             {
                 if (configuration == null)
                     throw new ArgumentNullException(nameof(configuration), 
@@ -76,7 +95,7 @@ namespace valet.lib.Config
                 services.UseTokenJwt(configuration);
             }
 
-            if (options.EnableValetSwaggerGen)
+            if (options.ValetSwaggerGenFeature)
                 services.UseValetSwaggerGen();
 
             if (options.UseCasesAssemblies.Any())
@@ -84,32 +103,22 @@ namespace valet.lib.Config
                 foreach (var assembly in options.UseCasesAssemblies)
                     services.InjectUseCases(assembly);
             }
-            else
+            
+            foreach (var interceptorType in options.Interceptors)
             {
-                services.InjectUseCases(typeof(TContext).Assembly);
+                services.TryAddEnumerable(
+                    ServiceDescriptor.Scoped(
+                        typeof(IInterceptor),
+                        interceptorType));
             }
             
-            if (options.EnableValetAuditing)
-                services.TryAddEnumerable(ServiceDescriptor.Scoped<IInterceptor, AuditSaveChangesInterceptor>());
+            services.TryAddSingleton<
+                IConfigureOptions<DbContextOptions<TContext>>,
+                ValetDbContextOptionsConfigurator<TContext>>();
+            
 
             return services;
         } 
-        
-        public static IServiceCollection AddValetDbContext<TContext>(
-            this IServiceCollection services,
-            Action<DbContextOptionsBuilder> optionsAction)
-            where TContext : AuthDbContext
-        {
-            services.AddDbContext<TContext>((sp, options) =>
-            {
-                optionsAction(options);
-
-                var interceptors = sp.GetServices<IInterceptor>();
-                options.AddInterceptors(interceptors);
-            });
-
-            return services;
-        }
         
         private static IServiceCollection InjectUseCases(
             this IServiceCollection services,
@@ -124,11 +133,13 @@ namespace valet.lib.Config
             };
             
             var typesToRegister = assembly.GetTypes()
-                .Where(t => t is { IsAbstract: false, IsInterface: false, BaseType.IsGenericType: true })
-                .Where(t => baseTypes.Contains(t.BaseType?.GetGenericTypeDefinition()));
+                .Where(t =>
+                    !t.IsAbstract &&
+                    !t.IsInterface &&
+                    baseTypes.Any(bt => IsSubclassOfGeneric(t, bt)));
 
             foreach (var type in typesToRegister)
-                services.AddScoped(type);
+                services.TryAddScoped(type);
 
             return services;
         }
@@ -196,6 +207,20 @@ namespace valet.lib.Config
             });
 
             return services;
+        }
+        
+        private static bool IsSubclassOfGeneric(Type type, Type generic)
+        {
+            while (type != null && type != typeof(object))
+            {
+                if (type.IsGenericType &&
+                    type.GetGenericTypeDefinition() == generic)
+                    return true;
+
+                type = type.BaseType;
+            }
+
+            return false;
         }
     }
 }

@@ -9,7 +9,7 @@ namespace valet.lib.Auth.Data.Mappings
         public void Configure(EntityTypeBuilder<User> builder)
         {
             builder.HasKey(x => x.Id);
-            builder.HasIndex(x => x.Login).IsUnique();
+            builder.HasIndex(x => x.Username).IsUnique();
         }
     }
 }

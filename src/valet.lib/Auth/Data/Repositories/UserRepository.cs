@@ -7,13 +7,13 @@ namespace valet.lib.Auth.Data.Repositories
 {
     internal class UserRepository<TContext>(TContext db) : Repository<User>(db), IUserRepository where TContext : AuthDbContext
     {
-        public async Task<bool> UserExistsAsync(string login) => await dbSet
-            .AnyAsync(u => u.Login.Equals(login));
+        public async Task<bool> UserExistsAsync(string username) => await dbSet
+            .AnyAsync(u => u.Username.Equals(username));
         public async Task<bool> UserExistsAsync(Guid identifier) => await dbSet
             .AnyAsync(u => u.Id.Equals(identifier));
-        public async Task<User> GetUserWithRolesAsync(string login) => await dbSet
+        public async Task<User> GetUserWithRolesAsync(string username) => await dbSet
             .Include(u => u.UserRoles) 
             .ThenInclude(ur => ur.Role) 
-            .FirstAsync(u => u.Login.Equals(login));
+            .FirstAsync(u => u.Username.Equals(username));
     }
 }
