@@ -4,12 +4,16 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using valet.lib.Auth.Data;
 using valet.lib.Auth.Data.Repositories;
 using valet.lib.Auth.Domain.Interfaces;
 using valet.lib.Auth.Domain.Interfaces.Repositories;
 using valet.lib.Auth.Service.Hash;
 using valet.lib.Auth.Service.Token;
+using valet.lib.Core.Audition;
 using valet.lib.Core.Data.Repositories;
 using valet.lib.Core.Domain.Interfaces;
 using valet.lib.Core.Patterns.UseCases;
@@ -48,8 +52,7 @@ namespace valet.lib.Config
         public static IServiceCollection AddValet<TContext>(
             this IServiceCollection services, 
             IConfiguration? configuration = null, 
-            Action<ValetOptions>? configure = null,
-            Assembly assembly = null) where TContext : AuthDbContext
+            Action<ValetOptions>? configure = null) where TContext : AuthDbContext
         {
             var options = new ValetOptions();
             configure?.Invoke(options);
@@ -76,17 +79,38 @@ namespace valet.lib.Config
             if (options.EnableValetSwaggerGen)
                 services.UseValetSwaggerGen();
 
-            if (options.AutoInjectUseCases)
+            if (options.UseCasesAssemblies.Any())
             {
-                if (assembly == null)
-                    throw new ArgumentNullException(nameof(assembly), 
-                        "Assembly is required when AutoInjectUseCases is true.");
-                
-                services.InjectUseCases(assembly);
+                foreach (var assembly in options.UseCasesAssemblies)
+                    services.InjectUseCases(assembly);
             }
+            else
+            {
+                services.InjectUseCases(typeof(TContext).Assembly);
+            }
+            
+            if (options.EnableValetAuditing)
+                services.TryAddEnumerable(ServiceDescriptor.Scoped<IInterceptor, AuditSaveChangesInterceptor>());
 
             return services;
         } 
+        
+        public static IServiceCollection AddValetDbContext<TContext>(
+            this IServiceCollection services,
+            Action<DbContextOptionsBuilder> optionsAction)
+            where TContext : AuthDbContext
+        {
+            services.AddDbContext<TContext>((sp, options) =>
+            {
+                optionsAction(options);
+
+                var interceptors = sp.GetServices<IInterceptor>();
+                options.AddInterceptors(interceptors);
+            });
+
+            return services;
+        }
+        
         private static IServiceCollection InjectUseCases(
             this IServiceCollection services,
             Assembly assembly)
@@ -173,7 +197,5 @@ namespace valet.lib.Config
 
             return services;
         }
-        
-        
     }
 }

@@ -1,4 +1,6 @@
-﻿namespace valet.lib.Config
+﻿using System.Reflection;
+
+namespace valet.lib.Config
 {
     /// <summary>
     /// Configuration options to enable or disable Valet modules such as authentication,
@@ -6,6 +8,10 @@
     /// </summary>
     public class ValetOptions
     {
+        private readonly HashSet<Assembly> _useCasesAssemblies = new();
+
+        public IReadOnlyCollection<Assembly> UseCasesAssemblies => _useCasesAssemblies;
+        
         /// <summary>
         /// Gets or sets a value indicating whether Valet authentication services should be enabled.
         /// </summary>
@@ -22,8 +28,14 @@
         public bool EnableValetSwaggerGen { get; set; } = false;
         
         /// <summary>
-        /// Gets or sets a value indicating whether UseCases should be automatically injected.
+        /// Gets or sets a value indicating whether entity auditing should be enabled.
         /// </summary>
-        public bool AutoInjectUseCases { get; set; } = false;
+        public bool EnableValetAuditing { get; set; } = false;
+        
+        public ValetOptions AddUseCasesFrom<T>()
+        {
+            _useCasesAssemblies.Add(typeof(T).Assembly);
+            return this;
+        }
     }
 }
