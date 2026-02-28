@@ -4,11 +4,11 @@ using valet.lib.Core.Domain.Interfaces;
 
 namespace valet.lib.Core.Audition;
 
-public class AuditSaveChangesInterceptor : SaveChangesInterceptor
+public class AuditInterceptor : SaveChangesInterceptor, IValetAuditInterceptor
 {
     private readonly ISystemClock _clock;
 
-    public AuditSaveChangesInterceptor(ISystemClock clock)
+    public AuditInterceptor(ISystemClock clock)
     {
         _clock = clock;
     }
@@ -18,7 +18,7 @@ public class AuditSaveChangesInterceptor : SaveChangesInterceptor
         InterceptionResult<int> result)
     {
         ApplyAudit(eventData.Context);
-        return result;
+        return base.SavingChanges(eventData, result);
     }
 
     public override ValueTask<InterceptionResult<int>> SavingChangesAsync(
@@ -27,7 +27,7 @@ public class AuditSaveChangesInterceptor : SaveChangesInterceptor
         CancellationToken cancellationToken = default)
     {
         ApplyAudit(eventData.Context);
-        return ValueTask.FromResult(result);
+        return base.SavingChangesAsync(eventData, result, cancellationToken);
     }
 
     private void ApplyAudit(DbContext? context)
@@ -38,11 +38,14 @@ public class AuditSaveChangesInterceptor : SaveChangesInterceptor
 
         foreach (var entry in entries)
         {
-            if (entry.State == EntityState.Added) 
-                entry.Entity.CreatedAt = _clock.UtcNow;
+            if (entry.State == EntityState.Added)
+            {
+                entry.Entity.CreatedAt = _clock.Now;
+                entry.Entity.UpdatedAt = _clock.Now;
+            }
             
             if (entry.State == EntityState.Modified) 
-                entry.Entity.UpdatedAt = _clock.UtcNow;
+                entry.Entity.UpdatedAt = _clock.Now;
         }
     }
 }

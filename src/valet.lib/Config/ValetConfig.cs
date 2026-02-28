@@ -1,11 +1,9 @@
 ﻿using System.Reflection;
 using System.Text;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using valet.lib.Auth.Data;
@@ -27,7 +25,7 @@ namespace valet.lib.Config
     /// </summary>
     /// <remarks>
     /// Features are enabled explicitly through <see cref="ValetOptions"/> fluent methods
-    /// such as <c>UseAuth()</c>, <c>UseHashing()</c>, <c>UseSwaggerGen()</c>
+    /// such as <c>UseAuth()</c>, <c>UseSwaggerGen()</c>
     /// and <c>UseAuditing()</c>.
     /// 
     /// Only the features explicitly enabled will be registered.
@@ -78,9 +76,7 @@ namespace valet.lib.Config
 
             services.AddScoped<IUnitOfWork, UnitOfWork<TContext>>();
             services.AddSingleton<ISystemClock, SystemClock>();
-
-            if (options.ValetHashFeature)
-                services.UsePasswordHasher();
+            services.AddTransient<IPasswordHasher, PasswordHasher>();
 
             if (options.ValetAuthFeature)
             {
@@ -108,17 +104,29 @@ namespace valet.lib.Config
             {
                 services.TryAddEnumerable(
                     ServiceDescriptor.Scoped(
-                        typeof(IInterceptor),
+                        typeof(IValetAuditInterceptor),
                         interceptorType));
             }
-            
-            services.TryAddSingleton<
-                IConfigureOptions<DbContextOptions<TContext>>,
-                ValetDbContextOptionsConfigurator<TContext>>();
-            
 
             return services;
         } 
+        
+        /// <summary>
+        /// Applies Valet EF Core auditing interceptor
+        /// to the current DbContextOptionsBuilder.
+        /// </summary>
+        public static DbContextOptionsBuilder EnableAuditing(
+            this DbContextOptionsBuilder builder,
+            IServiceProvider serviceProvider)
+        {
+            var interceptors = serviceProvider
+                .GetServices<IValetAuditInterceptor>();
+
+            if (interceptors.Any())
+                builder.AddInterceptors(interceptors);
+
+            return builder;
+        }
         
         private static IServiceCollection InjectUseCases(
             this IServiceCollection services,
@@ -141,12 +149,6 @@ namespace valet.lib.Config
             foreach (var type in typesToRegister)
                 services.TryAddScoped(type);
 
-            return services;
-        }
-
-        private static IServiceCollection UsePasswordHasher(this IServiceCollection services)
-        {
-            services.AddTransient<IPasswordHasher, PasswordHasher>();
             return services;
         }
 

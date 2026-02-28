@@ -12,7 +12,7 @@ namespace valet.lib.Config
     /// <remarks>
     /// This class follows a fluent configuration style. Features are enabled
     /// explicitly through intention-revealing methods such as <see cref="UseAuth"/>,
-    /// <see cref="UseHashing"/>, <see cref="UseSwaggerGen"/>, and <see cref="UseAuditing"/>.
+    /// <see cref="UseSwaggerGen"/>, <see cref="UseAuditing"/> and <see cref="AddUseCasesFrom{T}"/>.
     /// </remarks>
     public class ValetOptions
     {
@@ -36,8 +36,6 @@ namespace valet.lib.Config
         public IReadOnlyCollection<Type> Interceptors => _interceptors;
         
         internal bool ValetAuthFeature { get; private set; }
-
-        internal bool ValetHashFeature { get; private set; }
         
         internal bool ValetSwaggerGenFeature { get; private set; }
         
@@ -57,12 +55,12 @@ namespace valet.lib.Config
         
         /// <summary>
         /// Enables auditing support by registering the default
-        /// <see cref="AuditSaveChangesInterceptor"/>.
+        /// <see cref="AuditInterceptor"/>.
         /// </summary>
         /// <returns>The current <see cref="ValetOptions"/> instance.</returns>
         public ValetOptions UseAuditing()
         {
-            _interceptors.Add(typeof(AuditSaveChangesInterceptor));
+            _interceptors.Add(typeof(AuditInterceptor));
             return this;
         }
 
@@ -73,16 +71,6 @@ namespace valet.lib.Config
         public ValetOptions UseAuth()
         {
             ValetAuthFeature = true;
-            return this;
-        }
-        
-        /// <summary>
-        /// Enables Valet password hashing services.
-        /// </summary>
-        /// <returns>The current <see cref="ValetOptions"/> instance.</returns>
-        public ValetOptions UseHashing()
-        {
-            ValetHashFeature = true;
             return this;
         }
         
