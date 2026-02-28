@@ -13,21 +13,28 @@ namespace valet.lib.Auth.Domain.Entities
         protected User() { }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="User"/> class with specified personal data.
+        /// Initializes a new instance of the <see cref="User"/> class 
+        /// with the specified username and password hash.
         /// </summary>
-        /// <param name="login">User's login. Cannot be null or empty.</param>
-        /// <param name="password">User's password. Cannot be null or empty.</param>
-        /// <exception cref="ArgumentException">Thrown when any parameter is null or empty.</exception>
-        public User(string login, string password)
+        /// <param name="username">
+        /// The unique username used to identify the user. Cannot be null or empty.
+        /// </param>
+        /// <param name="password">
+        /// The password associated with the user. Cannot be null or empty.
+        /// </param>
+        /// <exception cref="ArgumentException">
+        /// Thrown when <paramref name="username"/> or <paramref name="password"/> is null or empty.
+        /// </exception>
+        public User(string username, string password)
         {
-            SetLogin(login);
+            SetUsername(username);
             SetPassword(password);
         }
         
         /// <summary>
-        /// Gets the user's login.
+        /// Gets the unique username used to identify the user.
         /// </summary>
-        public string Login { get; protected set; } = string.Empty;
+        public string Username { get; protected set; } = string.Empty;
 
         /// <summary>
         /// Gets the password of the user.
@@ -46,29 +53,33 @@ namespace valet.lib.Auth.Domain.Entities
         public void UpdatePassword(string password)
         {
             SetPassword(password);
-            Touch();
         }
 
         /// <summary>
-        /// Updates the user's login.
+        /// Updates the user's username.
         /// </summary>
-        /// <param name="login">The new login. Cannot be null or empty.</param>
-        public void UpdateLogin(string login)
+        /// <param name="username">
+        /// The new username. Cannot be null or empty.
+        /// </param>
+        public void UpdateUsername(string username)
         {
-            SetLogin(login);
-            Touch();
+            SetUsername(username);
         }
 
         /// <summary>
-        /// Sets the user's login with validation.
+        /// Sets the user's username with validation.
         /// </summary>
-        /// <param name="login">The login to set. Cannot be null or empty.</param>
-        /// <exception cref="ArgumentException">Thrown when <paramref name="login"/> is null or empty.</exception>
-        protected void SetLogin(string login)
+        /// <param name="username">
+        /// The username to assign. Cannot be null or empty.
+        /// </param>
+        /// <exception cref="ArgumentException">
+        /// Thrown when <paramref name="username"/> is null or empty.
+        /// </exception>
+        protected void SetUsername(string username)
         {
-            if (string.IsNullOrWhiteSpace(login))
-                throw new ArgumentException("Login cannot be null or empty.", nameof(login));
-            this.Login = login;
+            if (string.IsNullOrWhiteSpace(username))
+                throw new ArgumentException("Login cannot be null or empty.", nameof(username));
+            this.Username = username;
         }
 
         /// <summary>
@@ -97,7 +108,6 @@ namespace valet.lib.Auth.Domain.Entities
                 return;
 
             UserRoles.Add(userRole);
-            Touch();
         }
 
         /// <summary>
@@ -112,7 +122,6 @@ namespace valet.lib.Auth.Domain.Entities
             if (!UserRoles.Contains(userRole))
                 return;
             UserRoles.Remove(userRole);
-            Touch();
         }
     }
 }

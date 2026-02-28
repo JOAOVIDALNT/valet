@@ -36,7 +36,7 @@ namespace valet.test.Auth.Data.Repositories
                         .Where(x => x.Id == user.Id));
 
                 Assert.NotNull(result);
-                Assert.Equal(result.Login, user.Login);
+                Assert.Equal(result.Username, user.Username);
             }
         }
 
@@ -55,7 +55,7 @@ namespace valet.test.Auth.Data.Repositories
                 await userRepository.CreateAsync(user);
                 await uow.CommitAsync();
 
-                var result = await userRepository.UserExistsAsync(user.Login);
+                var result = await userRepository.UserExistsAsync(user.Username);
 
                 Assert.True(result);
             }
@@ -72,7 +72,7 @@ namespace valet.test.Auth.Data.Repositories
 
                 var user = UserBuilder.Build();
 
-                var result = await userRepository.UserExistsAsync(user.Login);
+                var result = await userRepository.UserExistsAsync(user.Username);
 
                 Assert.False(result);
             }
@@ -97,11 +97,11 @@ namespace valet.test.Auth.Data.Repositories
                 await userRepository.CreateAsync(user);
                 await uow.CommitAsync();
 
-                var result = await userRepository.GetUserWithRolesAsync(user.Login);
+                var result = await userRepository.GetUserWithRolesAsync(user.Username);
 
                 Assert.NotNull(result);
                 
-                Assert.Equal(user.Login, result.Login);
+                Assert.Equal(user.Username, result.Username);
                 Assert.Equal(userRole, result.UserRoles.First());
             }
         }

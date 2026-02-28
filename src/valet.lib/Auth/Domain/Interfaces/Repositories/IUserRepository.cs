@@ -10,14 +10,14 @@ namespace valet.lib.Auth.Domain.Interfaces.Repositories
     public interface IUserRepository : IRepository<User>
     {
         /// <summary>
-        /// Checks if a user with the specified email exists.
+        /// Checks if a user with the specified username exists.
         /// </summary>
-        /// <param name="login">The email of the user to check.</param>
+        /// <param name="username">The username of the user to check.</param>
         /// <returns>
         /// A <see cref="Task{TResult}"/> that represents the asynchronous operation.
         /// The task result contains <c>true</c> if a user with the given email exists; otherwise, <c>false</c>.
         /// </returns>
-        Task<bool> UserExistsAsync(string login);
+        Task<bool> UserExistsAsync(string username);
 
         /// <summary>
         /// Checks if a user with the specified identifier exists.
@@ -30,13 +30,13 @@ namespace valet.lib.Auth.Domain.Interfaces.Repositories
         Task<bool> UserExistsAsync(Guid identifier);
 
         /// <summary>
-        /// Retrieves a user by email along with their associated roles.
+        /// Retrieves a user by username along with their associated roles.
         /// </summary>
-        /// <param name="login">The email of the user to retrieve.</param>
+        /// <param name="username">The username of the user to retrieve.</param>
         /// <returns>
         /// A <see cref="Task{TResult}"/> that represents the asynchronous operation.
         /// The task result contains the <see cref="User"/> including its roles.
         /// </returns>
-        Task<User> GetUserWithRolesAsync(string login);
+        Task<User> GetUserWithRolesAsync(string username);
     }
 }

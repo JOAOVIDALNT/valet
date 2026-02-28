@@ -65,7 +65,6 @@ namespace valet.lib.Auth.Domain.Entities
                 return;
 
             UserRoles.Add(userRole);
-            Touch();
         }
 
         /// <summary>
@@ -80,7 +79,6 @@ namespace valet.lib.Auth.Domain.Entities
             if (!UserRoles.Contains(userRole))
                 return;
             UserRoles.Remove(userRole);
-            Touch();
         }
 
         /// <summary>
@@ -90,7 +88,6 @@ namespace valet.lib.Auth.Domain.Entities
         public void UpdateName(string name)
         {
             SetName(name);
-            Touch();
         }
     }
 }

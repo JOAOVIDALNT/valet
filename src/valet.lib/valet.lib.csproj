@@ -9,6 +9,8 @@
 	  <Company>Awlife Software</Company>
 	  <Description>A simple and lightweight library designed for easy web application setup, providing a complete repository pattern and seamless user authentication management.</Description>
 	  <PackageTags>authentication, authconfig, config, userauth, jwt, bearer, token, hasher, repository, unitofwork</PackageTags>
+    <Copyright>Copyright © 2026 Awlife Software</Copyright>
+    <Version>4.0.0</Version>
 	  <RepositoryUrl>https://github.com/JOAOVIDALNT/valet</RepositoryUrl>
 	  <GenerateDocumentationFile>true</GenerateDocumentationFile>
 	  <PackageIcon>valet_icon.png</PackageIcon>
