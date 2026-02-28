@@ -13,35 +13,28 @@ namespace valet.lib.Auth.Domain.Entities
         protected User() { }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="User"/> class with specified personal data.
+        /// Initializes a new instance of the <see cref="User"/> class 
+        /// with the specified username and password hash.
         /// </summary>
-        /// <param name="firstName">User's first name. Cannot be null or empty.</param>
-        /// <param name="lastName">User's last name. Cannot be null or empty.</param>
-        /// <param name="email">User's email. Cannot be null or empty.</param>
-        /// <param name="password">User's password. Cannot be null or empty.</param>
-        /// <exception cref="ArgumentException">Thrown when any parameter is null or empty.</exception>
-        public User(string firstName, string lastName, string email, string password)
+        /// <param name="username">
+        /// The unique username used to identify the user. Cannot be null or empty.
+        /// </param>
+        /// <param name="password">
+        /// The password associated with the user. Cannot be null or empty.
+        /// </param>
+        /// <exception cref="ArgumentException">
+        /// Thrown when <paramref name="username"/> or <paramref name="password"/> is null or empty.
+        /// </exception>
+        public User(string username, string password)
         {
-            SetFirstName(firstName);
-            SetLastName(lastName);
-            SetEmail(email);
+            SetUsername(username);
             SetPassword(password);
         }
-
+        
         /// <summary>
-        /// Gets the user's first name.
+        /// Gets the unique username used to identify the user.
         /// </summary>
-        public string FirstName { get; protected set; } = string.Empty;
-
-        /// <summary>
-        /// Gets the user's last name.
-        /// </summary>
-        public string LastName { get; protected set; } = string.Empty;
-
-        /// <summary>
-        /// Gets the user's email address.
-        /// </summary>
-        public string Email { get; protected set; } = string.Empty;
+        public string Username { get; protected set; } = string.Empty;
 
         /// <summary>
         /// Gets the password of the user.
@@ -60,67 +53,33 @@ namespace valet.lib.Auth.Domain.Entities
         public void UpdatePassword(string password)
         {
             SetPassword(password);
-            Touch();
         }
 
         /// <summary>
-        /// Updates the user's email address.
+        /// Updates the user's username.
         /// </summary>
-        /// <param name="email">The new email. Cannot be null or empty.</param>
-        public void UpdateEmail(string email)
+        /// <param name="username">
+        /// The new username. Cannot be null or empty.
+        /// </param>
+        public void UpdateUsername(string username)
         {
-            SetEmail(email);
-            Touch();
+            SetUsername(username);
         }
 
         /// <summary>
-        /// Updates the user's first and last name.
+        /// Sets the user's username with validation.
         /// </summary>
-        /// <param name="firstName">The new first name. Cannot be null or empty.</param>
-        /// <param name="lastName">The new last name. Cannot be null or empty.</param>
-        public void UpdateName(string firstName, string lastName)
+        /// <param name="username">
+        /// The username to assign. Cannot be null or empty.
+        /// </param>
+        /// <exception cref="ArgumentException">
+        /// Thrown when <paramref name="username"/> is null or empty.
+        /// </exception>
+        protected void SetUsername(string username)
         {
-            SetFirstName(firstName);
-            SetLastName(lastName);
-            Touch();
-        }
-
-        /// <summary>
-        /// Sets the user's first name with validation.
-        /// </summary>
-        /// <param name="firstName">The first name to set. Cannot be null or empty.</param>
-        /// <exception cref="ArgumentException">Thrown when <paramref name="firstName"/> is null or empty.</exception>
-        protected void SetFirstName(string firstName)
-        {
-            if (string.IsNullOrWhiteSpace(firstName))
-                throw new ArgumentException("First name cannot be null or empty.", nameof(firstName));
-
-            this.FirstName = firstName;
-        }
-
-        /// <summary>
-        /// Sets the user's last name with validation.
-        /// </summary>
-        /// <param name="lastName">The last name to set. Cannot be null or empty.</param>
-        /// <exception cref="ArgumentException">Thrown when <paramref name="lastName"/> is null or empty.</exception>
-        protected void SetLastName(string lastName)
-        {
-            if (string.IsNullOrWhiteSpace(lastName))
-                throw new ArgumentException("Last name cannot be null or empty.", nameof(lastName));
-
-            this.LastName = lastName;
-        }
-
-        /// <summary>
-        /// Sets the user's email address with validation.
-        /// </summary>
-        /// <param name="email">The email to set. Cannot be null or empty.</param>
-        /// <exception cref="ArgumentException">Thrown when <paramref name="email"/> is null or empty.</exception>
-        protected void SetEmail(string email)
-        {
-            if (string.IsNullOrWhiteSpace(email))
-                throw new ArgumentException("Email cannot be null or empty.", nameof(email));
-            this.Email = email;
+            if (string.IsNullOrWhiteSpace(username))
+                throw new ArgumentException("Login cannot be null or empty.", nameof(username));
+            this.Username = username;
         }
 
         /// <summary>
@@ -149,7 +108,6 @@ namespace valet.lib.Auth.Domain.Entities
                 return;
 
             UserRoles.Add(userRole);
-            Touch();
         }
 
         /// <summary>
@@ -164,7 +122,6 @@ namespace valet.lib.Auth.Domain.Entities
             if (!UserRoles.Contains(userRole))
                 return;
             UserRoles.Remove(userRole);
-            Touch();
         }
     }
 }

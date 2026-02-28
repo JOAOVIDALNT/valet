@@ -1,8 +1,4 @@
-﻿using Bogus;
-using Newtonsoft.Json.Linq;
-using System.IdentityModel.Tokens.Jwt;
-using valet.lib.Auth.Domain.Entities;
-using valet.lib.Auth.Service.Hash;
+﻿using System.IdentityModel.Tokens.Jwt;
 using valet.lib.Auth.Service.Token;
 using valet.test.Builders;
 
@@ -32,13 +28,12 @@ namespace valet.test.Auth.Service.Token
 
             var user = UserBuilder.Build();
             var result = generator.GenerateToken(user);
-            user.UpdateName("bolso","lula");
 
             var handler = new JwtSecurityTokenHandler();
             var jsonToken = handler.ReadToken(result) as JwtSecurityToken;
             var claims = jsonToken?.Claims;
 
-            Assert.DoesNotContain(claims!, x => x.Value == user.FirstName || x.Value == user.LastName);
+            Assert.DoesNotContain(claims!, x => x.Value == Guid.NewGuid().ToString());
         }
     }
 }

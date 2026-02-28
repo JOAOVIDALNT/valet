@@ -12,11 +12,9 @@ namespace valet.test.Builders
             return new Faker<User>()
                 .CustomInstantiator(f =>
                 {
-                    var firstName = f.Name.FirstName();
-                    var lastName = f.Name.LastName();
-                    var email = f.Internet.Email(firstName, lastName);
+                    var email = f.Internet.Email();
                     var password = f.Internet.Password(8, true, "#");
-                    return new User(firstName, lastName, email, hasher.HashPassword(password));
+                    return new User(email, hasher.HashPassword(password));
                 });
         }
     }
