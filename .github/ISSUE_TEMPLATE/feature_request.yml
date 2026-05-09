@@ -1,0 +1,33 @@
+name: "💡 Feature Request"
+description: "Suggest an idea or improvement for the project."
+title: "[Feature]: "
+labels: ["triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for wanting to improve the project! Please fill out the form below so we can evaluate your idea.
+  - type: textarea
+    id: problem
+    attributes:
+      label: "What problem are you trying to solve?"
+      description: "Describe clearly and concisely what problem or pain point motivated this suggestion."
+      placeholder: "e.g., Currently, it is difficult to setup audition because..."
+    validations:
+      required: true
+  - type: textarea
+    id: solution
+    attributes:
+      label: "What is your proposed solution?"
+      description: "How do you envision this feature working?"
+      placeholder: "e.g., We could auto-setup the audition process..."
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: "Alternatives you've considered"
+      description: "Did you consider any other alternative solutions or workarounds to solve this?"
+      placeholder: "e.g., I tried using a different implementation...."
+    validations:
+      required: false
