@@ -18,7 +18,6 @@ namespace valet.lib.Auth.Data.Repositories
             
             role = new Role(name);
             await dbSet.AddAsync(role);
-            await db.SaveChangesAsync();
             return role;
         }
     }

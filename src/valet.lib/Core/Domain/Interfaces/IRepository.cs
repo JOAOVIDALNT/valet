@@ -27,15 +27,29 @@ namespace valet.lib.Core.Domain.Interfaces
         /// <param name="tracked">
         /// Indicates whether the entities should be tracked by the context.
         /// </param>
+        /// <param name="cancellationToken">A token to cancel the async operation.</param>
         /// <returns>
         /// A task that represents the asynchronous operation.
         /// The task result contains a list of entities matching the criteria.
         /// </returns>
-        Task<List<T>> GetAllAsync(
+        Task<IReadOnlyList<T>> GetAllAsync(
             Func<IQueryable<T>, IQueryable<T>>? query = null,
             int pageSize = 0, 
             int pageNumber = 1, 
-            bool tracked = false);
+            bool tracked = false,
+            CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Asynchronously returns the count of entities matching the optional query.
+        /// </summary>
+        /// <param name="query">
+        /// An optional function to filter the query before counting.
+        /// </param>
+        /// <param name="cancellationToken">A token to cancel the async operation.</param>
+        /// <returns>The number of matching entities.</returns>
+        Task<int> CountAsync(
+            Func<IQueryable<T>, IQueryable<T>>? query = null,
+            CancellationToken cancellationToken = default);
         
         /// <summary>
         /// Asynchronously retrieves a single entity that matches the specified filter,
@@ -51,6 +65,7 @@ namespace valet.lib.Core.Domain.Interfaces
         /// <param name="tracked">
         /// Indicates whether the entity should be tracked by the context.
         /// </param>
+        /// <param name="cancellationToken">A token to cancel the async operation.</param>
         /// <returns>
         /// A task that represents the asynchronous operation.
         /// The task result contains the first matching entity,
@@ -58,7 +73,8 @@ namespace valet.lib.Core.Domain.Interfaces
         /// </returns>
         Task<T?> GetAsync(
             Func<IQueryable<T>, IQueryable<T>>? query = null,
-            bool tracked = false);
+            bool tracked = false,
+            CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Asynchronously adds a new entity to the database context.

@@ -39,7 +39,7 @@ namespace valet.lib.Auth.Service.Token
         {
             var claims = new ClaimsIdentity();
 
-            claims.AddClaim(new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()));
+            claims.AddClaim(new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()));
 
             foreach (var role in user.UserRoles)
             {

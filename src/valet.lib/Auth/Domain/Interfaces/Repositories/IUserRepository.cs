@@ -13,30 +13,33 @@ namespace valet.lib.Auth.Domain.Interfaces.Repositories
         /// Checks if a user with the specified username exists.
         /// </summary>
         /// <param name="username">The username of the user to check.</param>
+        /// <param name="cancellationToken">A token to cancel the async operation.</param>
         /// <returns>
         /// A <see cref="Task{TResult}"/> that represents the asynchronous operation.
         /// The task result contains <c>true</c> if a user with the given email exists; otherwise, <c>false</c>.
         /// </returns>
-        Task<bool> UserExistsAsync(string username);
+        Task<bool> UserExistsAsync(string username, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Checks if a user with the specified identifier exists.
         /// </summary>
         /// <param name="identifier">The unique identifier (GUID) of the user to check.</param>
+        /// <param name="cancellationToken">A token to cancel the async operation.</param>
         /// <returns>
         /// A <see cref="Task{TResult}"/> that represents the asynchronous operation.
         /// The task result contains <c>true</c> if a user with the given identifier exists; otherwise, <c>false</c>.
         /// </returns>
-        Task<bool> UserExistsAsync(Guid identifier);
+        Task<bool> UserExistsAsync(Guid identifier, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Retrieves a user by username along with their associated roles.
         /// </summary>
         /// <param name="username">The username of the user to retrieve.</param>
+        /// <param name="cancellationToken">A token to cancel the async operation.</param>
         /// <returns>
         /// A <see cref="Task{TResult}"/> that represents the asynchronous operation.
         /// The task result contains the <see cref="User"/> including its roles.
         /// </returns>
-        Task<User> GetUserWithRolesAsync(string username);
+        Task<User> GetUserWithRolesAsync(string username, CancellationToken cancellationToken = default);
     }
 }
