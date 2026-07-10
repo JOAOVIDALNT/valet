@@ -17,7 +17,18 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '8.0.x'
+          dotnet-version: '10.0.x'
+
+      - name: Validate tag major for .NET 10 only
+        run: |
+          VERSION=${GITHUB_REF_NAME#v}
+          MAJOR=${VERSION%%.*}
+
+          if [ "$MAJOR" -lt 5 ]; then
+            echo "This release contains a breaking runtime change (.NET 10 only)."
+            echo "Use a major tag >= v5.0.0. Current tag: ${GITHUB_REF_NAME}."
+            exit 1
+          fi
 
       - name: Restore
         run: dotnet restore
