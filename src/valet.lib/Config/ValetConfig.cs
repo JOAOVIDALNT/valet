@@ -5,7 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 using valet.lib.Auth.Data;
 using valet.lib.Auth.Data.Repositories;
 using valet.lib.Auth.Domain.Interfaces;
@@ -189,20 +189,10 @@ namespace valet.lib.Config
                     In = ParameterLocation.Header,
                     Scheme = "Bearer"
                 });
-                options.AddSecurityRequirement(new OpenApiSecurityRequirement()
+                options.AddSecurityRequirement(_ => new OpenApiSecurityRequirement()
                 {
                     {
-                        new OpenApiSecurityScheme
-                        {
-                            Reference = new OpenApiReference
-                            {
-                                Type = ReferenceType.SecurityScheme,
-                                Id = "Bearer"
-                            },
-                            Scheme = "oauth2",
-                            Name = "Bearer",
-                            In = ParameterLocation.Header
-                        },
+                        new OpenApiSecuritySchemeReference("Bearer", null, null),
                         new List<string>()
                     }
                 });
@@ -213,13 +203,15 @@ namespace valet.lib.Config
         
         private static bool IsSubclassOfGeneric(Type type, Type generic)
         {
-            while (type != null && type != typeof(object))
+            Type? currentType = type;
+
+            while (currentType != null && currentType != typeof(object))
             {
-                if (type.IsGenericType &&
-                    type.GetGenericTypeDefinition() == generic)
+                if (currentType.IsGenericType &&
+                    currentType.GetGenericTypeDefinition() == generic)
                     return true;
 
-                type = type.BaseType;
+                currentType = currentType.BaseType;
             }
 
             return false;
