@@ -18,7 +18,7 @@ namespace valet.lib.Core.Data.Repositories
         /// <summary>
         /// The <see cref="DbSet{T}"/> representing the entities in the context.
         /// </summary>
-        protected DbSet<T> dbSet;
+        protected readonly DbSet<T> dbSet;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Repository{T}"/> class
@@ -37,12 +37,12 @@ namespace valet.lib.Core.Data.Repositories
 
         public void Update(T entity) => dbSet.Update(entity);
         
-        public async Task<List<T>> GetAllAsync(
+        public async Task<IReadOnlyList<T>> GetAllAsync(
             Func<IQueryable<T>, IQueryable<T>>? query = null,
             int pageSize = 0, 
             int pageNumber = 1,
-            bool tracked = false
-            )
+            bool tracked = false,
+            CancellationToken cancellationToken = default)
         {
             IQueryable<T> q = tracked ? dbSet : dbSet.AsNoTracking();
             
@@ -52,20 +52,32 @@ namespace valet.lib.Core.Data.Repositories
             if (pageSize > 0)
                 q = q.Skip(pageSize * (pageNumber - 1)).Take(pageSize);
 
-            return await q.ToListAsync();
+            return await q.ToListAsync(cancellationToken);
+        }
+
+        public async Task<int> CountAsync(
+            Func<IQueryable<T>, IQueryable<T>>? query = null,
+            CancellationToken cancellationToken = default)
+        {
+            IQueryable<T> q = dbSet.AsNoTracking();
+
+            if (query != null)
+                q = query(q);
+
+            return await q.CountAsync(cancellationToken);
         }
         
         public async Task<T?> GetAsync(
             Func<IQueryable<T>, IQueryable<T>>? query = null,
-            bool tracked = false
-            )
+            bool tracked = false,
+            CancellationToken cancellationToken = default)
         {
             IQueryable<T> q = tracked ? dbSet : dbSet.AsNoTracking();
 
             if (query != null)
                 q = query(q);
             
-            return await q.FirstOrDefaultAsync();
+            return await q.FirstOrDefaultAsync(cancellationToken);
         }
         
     }

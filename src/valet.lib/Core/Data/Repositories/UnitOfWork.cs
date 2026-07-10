@@ -20,7 +20,10 @@ namespace valet.lib.Core.Data.Repositories
         public async Task CommitAsync(CancellationToken cancellationToken = default)
         {
             if (_transaction == null)
-                throw new InvalidOperationException("No active transaction to commit.");
+            {
+                await _context.SaveChangesAsync(cancellationToken);
+                return;
+            }
 
             try
             {

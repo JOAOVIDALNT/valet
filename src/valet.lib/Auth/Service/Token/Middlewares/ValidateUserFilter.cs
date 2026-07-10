@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 using valet.lib.Auth.Domain.Interfaces;
@@ -14,11 +15,13 @@ namespace valet.lib.Auth.Service.Token.Middlewares
     {
         private readonly ITokenValidator _tokenValidator;
         private readonly IUserRepository _userRepository;
+        private readonly ILogger<ValidateUserFilter> _logger;
         private readonly string _roles;
-        public ValidateUserFilter(IUserRepository userRepository, ITokenValidator tokenValidator, string roles)
+        public ValidateUserFilter(IUserRepository userRepository, ITokenValidator tokenValidator, ILogger<ValidateUserFilter> logger, string roles)
         {
             _userRepository = userRepository;
             _tokenValidator = tokenValidator;
+            _logger = logger;
             _roles = roles;
         }
         public async Task OnAuthorizationAsync(AuthorizationFilterContext context)
@@ -55,8 +58,9 @@ namespace valet.lib.Auth.Service.Token.Middlewares
                 context.HttpContext.Response.StatusCode = (int)ex.GetStatusCode();
                 context.Result = new ObjectResult(new ErrorResponse(ex.GetErrorMessages()));
             }
-            catch
+            catch (Exception ex)
             {
+                _logger.LogError(ex, "Unexpected error during authorization.");
                 context.Result = new UnauthorizedObjectResult(new ErrorResponse(ValetResourceMessageException.USER_UNAUTHORIZED));
             }
         }
